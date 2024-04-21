@@ -13,7 +13,7 @@ MSSQL Injection 실습 시 활용 가능한 시트<br>
 
 ## (1) 기본 데이터베이스
 ![image](https://github.com/what0302/what0302.github.io/assets/18510716/647bf2cd-2e05-4cc9-a3e0-b75e172853f1)
-)
+
 
 
 
@@ -24,7 +24,7 @@ MSSQL Injection 실습 시 활용 가능한 시트<br>
 여기서 코멘트 아웃(Comment Out)이란 디버그에서 자주 사용되는 방법으로 코멘트를 지시하는 문을 삽입하여 프로그램이나 명령어 집합의 일부를 일시적으로 사용하지 않는 것을 말함.<br><br>
 
 ![image](https://github.com/what0302/what0302.github.io/assets/18510716/29a491cb-faeb-4f00-8149-c9de61826139)
-)
+
 <br><br>
 예 :<br>
 `SELECT * FROM Users WHERE username = '' OR 1=1 --' AND password = '';`<br>
