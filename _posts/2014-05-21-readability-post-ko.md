@@ -8,7 +8,7 @@ comments: true
 THOR APT Scanner를 활용한 침해 진단 업무
 
 ---
-##### 링크: [KOROMOON][KOROMOONlink]
+##### 출처 링크: [KOROMOON][KOROMOONlink]
 [KOROMOONlink]: https://koromoon.blogspot.com/2022/09/thor-apt-scanner.html "Go KOROMOON"
 ## (1) THOR APT Scanner
 - Nextron Systems 사에서 개발한 침해 진단 도구로 수천 개의 YARA 및 Sigma 규칙, IOC, 루트킷 및 이상 검사로 구성된 거대한 서명 세트를 통해 모든 종류의 위협을 검사하는 도구임.
