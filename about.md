@@ -4,7 +4,7 @@ title: About
 permalink: /about/
 ---
 
-모의해킹을 꿈꾸고 있는 Eric의 블로그입니다!
+모의해킹을 꿈꾸는 Eric의 블로그입니다!
 
 
 ### More Information
