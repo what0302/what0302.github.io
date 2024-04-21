@@ -8,7 +8,8 @@ comments: true
 THOR APT Scanner를 활용한 침해 진단 업무
 
 ---
-
+##### 링크: [KOROMOON][KOROMOONlink]
+[KOROMOONlink]: https://koromoon.blogspot.com/2022/09/thor-apt-scanner.html "Go KOROMOON"
 ## (1) THOR APT Scanner
 - Nextron Systems 사에서 개발한 침해 진단 도구로 수천 개의 YARA 및 Sigma 규칙, IOC, 루트킷 및 이상 검사로 구성된 거대한 서명 세트를 통해 모든 종류의 위협을 검사하는 도구임.
 - 홈페이지 링크 : https://www.nextron-systems.com/
@@ -16,8 +17,8 @@ THOR APT Scanner를 활용한 침해 진단 업무
 - 금액 부담없이 일반 기업체에서 침해 진단 업무에 사용할 경우 무료 THOR Lite 제품으로도 가능함.
 - 보통 실서비스 서버에 웹쉘 파일이나 악의적인 도구 존재 여부에 대해 파일 검사 선에서 진단하면 됨.
 
-</br><div align="center"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEheekMwbBM5SjT5kiE1M2-jmemMoeiGssaM__pZW5kgcuUCrFghQNEks1uxUx5vBFHt5Rs2pTQC2PlM-h_2xgsRN24yROMwt7v7bv3xBaFM7B2k-m7baVX8d_koPCBMWPV_mUVzOFFC4mYEOYZZG831HMfo9U3J3RI7Lqg-37YDrRLQQx6G9aqWUBaT/w640-h484/%EC%A0%9C%ED%92%88%EB%B3%84%20%EA%B8%B0%EB%8A%A5%20%EB%B6%84%EB%A5%98%ED%91%9C.png"></div>
-<div align="center">&lt; 제품별 기능 분류표 &gt;</div></br>
+<div align="center"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEheekMwbBM5SjT5kiE1M2-jmemMoeiGssaM__pZW5kgcuUCrFghQNEks1uxUx5vBFHt5Rs2pTQC2PlM-h_2xgsRN24yROMwt7v7bv3xBaFM7B2k-m7baVX8d_koPCBMWPV_mUVzOFFC4mYEOYZZG831HMfo9U3J3RI7Lqg-37YDrRLQQx6G9aqWUBaT/w640-h484/%EC%A0%9C%ED%92%88%EB%B3%84%20%EA%B8%B0%EB%8A%A5%20%EB%B6%84%EB%A5%98%ED%91%9C.png"></div>
+<div align="center">&lt; 제품별 기능 분류표 &gt;</div>
 
 - 참고로 백신 같은 경우 탐지/삭제하는 문제로 추후에 진단 시 보고나 포렌식 업무에 문제가 생길 수 있음.
 - 또한, 리눅스 서버에서는 유료 백신을 설치할 경우, 서버당 라이센스 비용이 상당하며 실서비스에 구동할 경우, 오탐으로 인한 서비스 파일 삭제 등 문제가 발생할 수 있음.
@@ -32,9 +33,9 @@ THOR APT Scanner를 활용한 침해 진단 업무
 - 사용 라이센스 기간은 1년이며 짧은 기간이 아니므로 큰 문제는 안됨.
 - **참고로 사용 라이센스 파일은 THOR Lite 프로그램 디렉토리 안에 위치해야 사용이 가능함.**
 
-</br><div align="center"> <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjzQWZP2aAsAHJTbH3GIfHume4jCSbE05jezOMifdLI-pNZfALITnKnafWnYEYXFbwz88h1nQQDzycYOm7WRc9DA20NSacaSAiIQLCr3St5X2-Suf_1u3C_dxrSpIYCqkMnnlGX2krQNooqQSpTqFJPsn7BdQDUnFyGenxPXZtE30hxd99E14DJD14F/w640-h338/%EC%82%AC%EC%9A%A9%20%EB%9D%BC%EC%9D%B4%EC%84%BC%EC%8A%A4%20%ED%8C%8C%EC%9D%BC%20%EC%9C%84%EC%B9%98%20%ED%99%94%EB%A9%B4_%EA%B0%80%EA%B3%B5.png"></div>
+<div align="center"> <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjzQWZP2aAsAHJTbH3GIfHume4jCSbE05jezOMifdLI-pNZfALITnKnafWnYEYXFbwz88h1nQQDzycYOm7WRc9DA20NSacaSAiIQLCr3St5X2-Suf_1u3C_dxrSpIYCqkMnnlGX2krQNooqQSpTqFJPsn7BdQDUnFyGenxPXZtE30hxd99E14DJD14F/w640-h338/%EC%82%AC%EC%9A%A9%20%EB%9D%BC%EC%9D%B4%EC%84%BC%EC%8A%A4%20%ED%8C%8C%EC%9D%BC%20%EC%9C%84%EC%B9%98%20%ED%99%94%EB%A9%B4_%EA%B0%80%EA%B3%B5.png"></div>
 
-<div align="center">&lt; 사용 라이센스 위치 화면 &gt;</div></br>
+<div align="center">&lt; 사용 라이센스 위치 화면 &gt;</div>
 
 - **THOR Lite 제품은 포터블 형식으로 관리자 권한이나 root 권한으로 실행해야 하며 커맨드 라인에서 필요한 옵션만 사용하여 침해 진단함.**
 
@@ -50,12 +51,12 @@ THOR APT Scanner를 활용한 침해 진단 업무
 
 `sudo ./thor-lite-linux-64 -c 20 --verylowprio -a Filescan -p /`
 
-</br><div align="center"> <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgggCQA50NZLs3_X-BNJoSSGYcIJYTzCgpGzXdIUGsI-4t9E3oTgOaNkahdnhoRfmdqu6db2QZ3HJlD0U0AOBwxcob-zGPuHi0EKUTDxUKzDBGUmXLtE0nES0uZDpqB-HeI-BYCdEzEPZDTRmn9aMn05bVP2Eomsrk7khrRm0_QqkGMFGt_N6N0VHKt/w640-h274/%EC%9C%88%EB%8F%84%EC%9A%B0%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EA%B2%80%EC%82%AC%20%ED%99%94%EB%A9%B4_%EA%B0%80%EA%B3%B5.png"></div>
+<div align="center"> <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgggCQA50NZLs3_X-BNJoSSGYcIJYTzCgpGzXdIUGsI-4t9E3oTgOaNkahdnhoRfmdqu6db2QZ3HJlD0U0AOBwxcob-zGPuHi0EKUTDxUKzDBGUmXLtE0nES0uZDpqB-HeI-BYCdEzEPZDTRmn9aMn05bVP2Eomsrk7khrRm0_QqkGMFGt_N6N0VHKt/w640-h274/%EC%9C%88%EB%8F%84%EC%9A%B0%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EA%B2%80%EC%82%AC%20%ED%99%94%EB%A9%B4_%EA%B0%80%EA%B3%B5.png"></div>
 
-<div align="center">&lt; 윈도우 시스템 실행 화면 &gt;</div></br>
+<div align="center">&lt; 윈도우 시스템 실행 화면 &gt;</div>
 
-</br><div align="center"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgPapZRHYG-S8K8I-YzdfhcuD9JRT2Oi7zJ5GUo5GyAOdjvy36Pcvo6X82q3LdUZxu4yfBR4ue23KyT3X-HE_HrUOdGzjSKaYC67U5npJO6L07m_LfskkDPK48ycX8P628EKA2kW6w1tYL7XINyA7oXv1qmFu_aqG9xBIp7omDQ-AMaFP1dyvC_U148/w640-h308/%EB%A6%AC%EB%88%85%EC%8A%A4%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EA%B2%80%EC%82%AC%20%ED%99%94%EB%A9%B4_%EA%B0%80%EA%B3%B5.png"></div>
-<div align="center">&lt; 리눅스 시스템 실행 화면 &gt</div></br>
+<div align="center"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgPapZRHYG-S8K8I-YzdfhcuD9JRT2Oi7zJ5GUo5GyAOdjvy36Pcvo6X82q3LdUZxu4yfBR4ue23KyT3X-HE_HrUOdGzjSKaYC67U5npJO6L07m_LfskkDPK48ycX8P628EKA2kW6w1tYL7XINyA7oXv1qmFu_aqG9xBIp7omDQ-AMaFP1dyvC_U148/w640-h308/%EB%A6%AC%EB%88%85%EC%8A%A4%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EA%B2%80%EC%82%AC%20%ED%99%94%EB%A9%B4_%EA%B0%80%EA%B3%B5.png"></div>
+<div align="center">&lt; 리눅스 시스템 실행 화면 &gt</div>
 
 - 제품에 기본적으로 제공하는 YARA 규칙으로도 상당수 탐지가 가능하며 아래 링크에서 고도화된 APT 관련 YARA 규칙을 추가할 수 있음. (주기적 업데이트 가능)
 - APT 관련 YARA 규칙 다운로드 링크 : [https://github.com/Neo23x0/signature-base/tree/master/yara](https://github.com/Neo23x0/signature-base/tree/master/yara)
