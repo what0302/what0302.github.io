@@ -46,7 +46,7 @@ MSSQL 버전이 2008 인 경우 참임.<br>
 
 ## (4) 데이터베이스 자격 증명
 
-<img src="https://github.com/ICTIS-Cert-System-Project/ICTIS-Cert-System/assets/18510716/0f5cfc77-20ee-466b-84b9-2a736a648d76"/>
+<img src="https://github.com/ICTIS-Cert-System-Project/ICTIS-Cert-System/assets/18510716/0f5cfc77-20ee-466b-84b9-2a736a648d76" />
 <br><br>
 예 :<br>
 현재 사용자 반환 :<br>
