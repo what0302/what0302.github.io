@@ -21,7 +21,7 @@ MSSQL Injection 실습 시 활용 가능한 시트<br>
 
 여기서 코멘트 아웃(Comment Out)이란 디버그에서 자주 사용되는 방법으로 코멘트를 지시하는 문을 삽입하여 프로그램이나 명령어 집합의 일부를 일시적으로 사용하지 않는 것을 말함.<br><br>
 
-![image](https://github.com/ICTIS-Cert-System-Project/ICTIS-Cert-System/assets/18510716/32aaba19-680c-4cc2-9670-b1d33e23d718)
+![image]([https://github.com/ICTIS-Cert-System-Project/ICTIS-Cert-System/assets/18510716/32aaba19-680c-4cc2-9670-b1d33e23d718](https://github-production-user-asset-6210df.s3.amazonaws.com/18510716/323126304-32aaba19-680c-4cc2-9670-b1d33e23d718.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20240421%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240421T233220Z&X-Amz-Expires=300&X-Amz-Signature=9cf5c840c90829108290ce4ad7fbdd6869adcd15a28052bfe4d15a8cb3562e67&X-Amz-SignedHeaders=host&actor_id=18510716&key_id=0&repo_id=779222107))
 <br><br>
 예 :<br>
 `SELECT * FROM Users WHERE username = '' OR 1=1 --' AND password = '';`<br>
