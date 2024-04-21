@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "MSSQL Injection Cheet Sheet"
-tags: [정보보안, 툴]
+tags: [정보보안, 시트]
 comments: true
 ---
 MSSQL Injection 실습 시 활용 가능한 시트
@@ -10,10 +10,10 @@ MSSQL Injection 실습 시 활용 가능한 시트
 ##### 링크: [KOROMOON][KOROMOONlink]
 [KOROMOONlink]: https://koromoon.blogspot.com/2018/10/mssql-injection-cheet-sheet.html "Go KOROMOON"
 
-<br><div align="center"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhTks81iuUfdMyDiGJs6xgSUxQEVA5zjfCDMgYShiNwWVDsgz9Drnr7p52BQDWhku98ZaALzGr6rFSBm2HqZVgCL-uYs4TlPYyxTpqCaWvR-vCcA7aUdpr-VzwLRMkkOnNojks9fLi1rCM/s1600/MSSQL+Injection.jpg"></div><br><br><br>
+<img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhTks81iuUfdMyDiGJs6xgSUxQEVA5zjfCDMgYShiNwWVDsgz9Drnr7p52BQDWhku98ZaALzGr6rFSBm2HqZVgCL-uYs4TlPYyxTpqCaWvR-vCcA7aUdpr-VzwLRMkkOnNojks9fLi1rCM/s1600/MSSQL+Injection.jpg"><br><br>
 
 ## (1) 기본 데이터베이스
-![image](https://github.com/ICTIS-Cert-System-Project/ICTIS-Cert-System/assets/18510716/0d754497-e8a3-4ea7-99e8-dc7dea8f9acf)
+![image]([https://github.com/ICTIS-Cert-System-Project/ICTIS-Cert-System/assets/18510716/0d754497-e8a3-4ea7-99e8-dc7dea8f9acf](https://github-production-user-asset-6210df.s3.amazonaws.com/18510716/323126184-0d754497-e8a3-4ea7-99e8-dc7dea8f9acf.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20240421%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240421T232809Z&X-Amz-Expires=300&X-Amz-Signature=89a3f4fbf9903052afa8749499ea18dee7cfcc60b5a5b73a5fee35104613765a&X-Amz-SignedHeaders=host&actor_id=18510716&key_id=0&repo_id=779222107))
 
 
 <br><br><br>
