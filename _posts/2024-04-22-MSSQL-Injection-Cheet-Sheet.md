@@ -12,7 +12,7 @@ MSSQL Injection 실습 시 활용 가능한 시트<br>
 [KOROMOONlink]: https://koromoon.blogspot.com/2018/10/mssql-injection-cheet-sheet.html "Go KOROMOON"
 
 ## (1) 기본 데이터베이스
-![image](https://github.com/what0302/what0302.github.io/assets/18510716/647bf2cd-2e05-4cc9-a3e0-b75e172853f1)
+<img src="https://github.com/what0302/what0302.github.io/assets/18510716/647bf2cd-2e05-4cc9-a3e0-b75e172853f1" />
 
 
 
