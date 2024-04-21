@@ -1,3 +1,11 @@
+---
+layout: post
+title: "MSSQL Injection Cheet Sheet"
+tags: [정보보안, 툴]
+comments: true
+---
+
+
 # MSSQL Injection Cheet Sheet
 ##### 링크: [KOROMOON][KOROMOONlink]
 [KOROMOONlink]: https://koromoon.blogspot.com/2018/10/mssql-injection-cheet-sheet.html "Go KOROMOON"
