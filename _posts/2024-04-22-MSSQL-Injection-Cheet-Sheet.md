@@ -4,14 +4,11 @@ title: "MSSQL Injection Cheet Sheet"
 tags: [정보보안, 툴]
 comments: true
 ---
+MSSQL Injection 실습 시 활용 가능한 시트
 
 
-# MSSQL Injection Cheet Sheet
 ##### 링크: [KOROMOON][KOROMOONlink]
 [KOROMOONlink]: https://koromoon.blogspot.com/2018/10/mssql-injection-cheet-sheet.html "Go KOROMOON"
-##### 작성자: 김태현 사원
-##### 작성일자: 2024년 4월 17일 
-</br>
 
 <br><div align="center"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhTks81iuUfdMyDiGJs6xgSUxQEVA5zjfCDMgYShiNwWVDsgz9Drnr7p52BQDWhku98ZaALzGr6rFSBm2HqZVgCL-uYs4TlPYyxTpqCaWvR-vCcA7aUdpr-VzwLRMkkOnNojks9fLi1rCM/s1600/MSSQL+Injection.jpg"></div><br><br><br>
 
