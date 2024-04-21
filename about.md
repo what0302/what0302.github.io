@@ -4,12 +4,13 @@ title: About
 permalink: /about/
 ---
 
-Some information about you!
+모의해킹을 꿈꾸고 있는 Eric의 블로그입니다!
+
 
 ### More Information
 
-A place to include any other types of information that you'd like to include about yourself.
+- 한국통신인터넷기술 2년차 재직중
 
 ### Contact me
 
-[email@domain.com](mailto:email@domain.com)
+[what0302@gmail.com](mailto:what0302@gmail.com)
