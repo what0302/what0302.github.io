@@ -46,7 +46,8 @@ MSSQL 버전이 2008 인 경우 참임.<br>
 
 ## (4) 데이터베이스 자격 증명
 
-<img src="![image](https://github.com/what0302/what0302.github.io/assets/18510716/611f83cc-8e26-4fc3-b845-fdad5fe6dd7f)
+![image](https://github.com/what0302/what0302.github.io/assets/18510716/0d590a74-b692-458f-9a90-caf07286f192)
+
 " />
 <br><br>
 예 :<br>
