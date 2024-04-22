@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "Web-login page 구현"
-tags: [정보보안, 툴]
+title: "Frontend Development (Web-page)"
+tags: [웹개발, HTML. CSS]
 comments: true
 ---
 
