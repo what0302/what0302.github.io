@@ -11,7 +11,7 @@ HTML, CSS, PHP 를 이용한 간단한 로그인 페이지 구축
 
 ## (1) login.php
 
-<br>
+
 
 ```php
 <link rel="stylesheet" href="style.css">
@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 ## (2) welcome.php
 
-<br>
+
 
 ```php
 <?php
@@ -97,7 +97,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 
 ## (3) logut.php
 
-<br>
+
 
 ```php
 <?php
@@ -112,7 +112,7 @@ exit();
 
 ## (4) style.css
 
-<br>
+
 
 ```css
 * {
@@ -222,16 +222,16 @@ exit();
 ### 1. 로그인 페이지
 <img width="500" alt="스크린샷 2024-04-22 오후 3 21 34" src="https://github.com/what0302/what0302.github.io/assets/18510716/610d0910-ec4c-4f9f-9cf3-a543bb850c35">
 
-<br>
+
 
 ### 2. 로그인 실패 문구
 <img width="500" alt="스크린샷 2024-04-22 오후 3 21 55" src="https://github.com/what0302/what0302.github.io/assets/18510716/21e7d165-e37f-45b2-8501-165c5f5ae2ab">
 
-<br>
+
 
 ### 3. 로그인 성공 문구
 <img width="500" alt="스크린샷 2024-04-22 오후 3 22 21" src="https://github.com/what0302/what0302.github.io/assets/18510716/1e3f536b-5db6-4c09-addb-2cf416f84ec8">
 
-<br>
+
 
 <img width="593" alt="스크린샷 2024-04-22 오후 3 22 11" src="https://github.com/what0302/what0302.github.io/assets/18510716/8c5a010c-cb75-415b-a1cc-5c69b8ee1642">
