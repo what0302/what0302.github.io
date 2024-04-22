@@ -43,7 +43,7 @@ comments: true
  <tbody><tr>
   <td style="border: 1pt solid windowtext; mso-border-alt: solid windowtext .5pt; padding: 0cm 5.4pt; width: 461.2pt;" valign="top" width="615">
   <p align="left" class="MsoNoSpacing"><i><span lang="EN-US"><span style="font-family: courier;">
-        CSS : Cascading Style Sheets<o:p></o:p></span></span></i></p>
+        PHP : Hypertext Preprocessor<o:p></o:p></span></span></i></p>
   </td>
  </tr>
 </tbody></table><br>
