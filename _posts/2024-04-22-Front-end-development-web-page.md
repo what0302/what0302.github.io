@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Frontend Development (Web-page)"
-tags: [웹개발, HTML. CSS]
+tags: [웹개발, HTML, CSS]
 comments: true
 ---
 
