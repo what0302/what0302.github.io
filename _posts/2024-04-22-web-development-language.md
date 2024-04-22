@@ -1,11 +1,11 @@
 ---
 layout: post
-title: "Web-page Development"
+title: "Web-Development 언어 설명"
 tags: [웹개발, HTML, CSS, PHP]
 comments: true
 ---
 
-HTML, CSS, PHP 를 이용해서 로그인 페이지를 구현함
+웹 개발 언어인 HTML, CSS, PHP 에 대한 설명임
 
 ---
 ## (1) HTML
