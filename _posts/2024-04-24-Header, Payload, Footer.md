@@ -5,7 +5,9 @@ tags: [정보보안, ]
 comments: true
 ---
 
-##### 링크: [KOROMOON][koromoonlink]
+메시지는 네트워크를 통해 정보를 전송하는 데 쓰이는 구조임.
+
+##### 출처 링크: [KOROMOON][koromoonlink]
 [koromoonlink]: https://koromoon.blogspot.com/2019/01/blog-post_16.html "Go koromoon"
 
 > ***메시지란?*** <br>
