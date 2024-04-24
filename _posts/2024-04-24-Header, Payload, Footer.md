@@ -1,12 +1,12 @@
-# 네트워크 메시지 포맷팅 - 헤더, 페이로드, 푸터
-##### 원작자: 문광일 PM
+---
+layout: post
+title: " 네트워크 메시지 포맷팅 - 헤더, 페이로드, 푸터"
+tags: [정보보안, ]
+comments: true
+---
+
 ##### 링크: [KOROMOON][koromoonlink]
 [koromoonlink]: https://koromoon.blogspot.com/2019/01/blog-post_16.html "Go koromoon"
-##### 작성자: 강하늘 사원
-##### 작성일자: 2024년 4월 3일 
-</br>
-
-
 
 > ***메시지란?*** </br>
 네트워크를 통해 정보를 전송하는 데 쓰이는 구조임. </br>
