@@ -1,7 +1,7 @@
 ---
 layout: post
 title: " 네트워크 메시지 포맷팅 - 헤더, 페이로드, 푸터"
-tags: [정보보안, ]
+tags: [정보보안, 네트워크]
 comments: true
 ---
 
