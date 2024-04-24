@@ -10,7 +10,7 @@ comments: true
 ##### 출처 링크: [KOROMOON][koromoonlink]
 [koromoonlink]: https://koromoon.blogspot.com/2019/01/blog-post_16.html "Go koromoon"
 
-> ***메시지란?*** <br>
+> ***메시지란?***
 네트워크를 통해 정보를 전송하는 데 쓰이는 구조임.
 메시지는 프로토콜이나 기술 별로 크게 다르며 부르는 명칭도 다양함.
 메시지들을 구분하는 것은 명칭이 아니라 그 안의 내용임.
@@ -27,6 +27,8 @@ comments: true
 <br>
 
 <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjhwqWVOFusw1-YNirZ3qCmWN8b1sR0u8p4kSGgQ6FqKO-Rbu9_Z4NdB45PXIWf2Y7FJFgirRgEHdTXkljYNIifBFrSdj8Vs7qX5hTDgb4rO2i_BPhJd9Bw0sQC3gvK7hx-xnDb7vkkYqU/s640/%25EB%2584%25A4%25ED%258A%25B8%25EC%259B%258C%25ED%2581%25AC+%25EB%25A9%2594%25EC%258B%259C%25EC%25A7%2580+%25ED%258F%25AC%25EB%25A7%25B7%25ED%258C%2585.png">
+
+<br>
 
 ## 헤더
 실제 데이터 앞부분에 위치하는 정보임.
@@ -66,7 +68,6 @@ comments: true
 푸터에 자주 쓰이는 필드의 예로 수신 장비에서 에러를 탐지하는 데 쓰이는 순환 중복 검사(CSR : Cyclic Redundancy Check) 코드가 있음.
 푸터는 대부분 하위 계층 프토토콜, 특히 OSI 참조 모델의 링크 계층 프로토콜에서 많이 쓰임.
 
-<br>
 
 일반적으로, 프로토콜은 오직 헤더(그리고 푸터)에만 관심이 있음. 
 데이터의 첫 부분에는 일반적으로 프로토콜 스택의 상위 계층에서 사용하는 다른 프로토콜의 헤더가 들어 있음.
