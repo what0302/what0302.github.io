@@ -101,5 +101,60 @@ OUTPUT_FILE = 'output_ip.csv'  # 결과 출력 파일
 
 ### 도메인 검색 코드 
 ``` python
+import csv
+import requests
+import urllib3
+import time
+import hashlib
+from tqdm import tqdm
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+API_KEY = 'a144683199253ea9a9484a60f9c366c133271306b1c3ca887832bd83cce97017' #sec-07-1
+URL_FILE = 'url_list.txt'
+OUTPUT_FILE = 'output_url.csv'
+
+# Function to calculate SHA256 hash
+def get_sha256_hash(text):
+    normalized_url = text.lower().replace('[', '').replace(']', '') # Normalize URL before hashing
+    return hashlib.sha256(normalized_url.encode()).hexdigest()
+
+# Read URLs from file
+with open(URL_FILE, 'r') as f:
+    urls = [line.strip() for line in f]
+
+# Make API request for each URL
+with open(OUTPUT_FILE, 'w', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(['URL', 'Detected', 'Engines', 'Search_URL'])
+
+    seen_urls = set() # to track seen URLs
+    with tqdm(total=len(urls)) as pbar:
+        for i, url in enumerate(urls):
+            if url in seen_urls: # skip if already seen
+                continue
+            
+            params = {'apikey': API_KEY, 'resource': url}
+            response = requests.get('https://www.virustotal.com/vtapi/v2/url/report', params=params, verify=False)
+
+            if response.status_code == 200:
+                data = response.json()
+                if isinstance(data, dict): # Check if the response data is a dictionary
+                    detected = data.get('positives', False)
+                    engines = sorted([engine for engine in data.get('scans', {}).keys() if data['scans'][engine]['detected']])
+                    search_url = f"https://www.virustotal.com/gui/url/{get_sha256_hash(url)}/detection"
+
+                    writer.writerow([url, detected, '|'.join(engines), search_url])
+                else:
+                    print(f"Error: Unexpected response format {data}")
+            else:
+                print(f"Error: {response.status_code} {response.reason}")
+            
+            seen_urls.add(url) # add current URL to seen_urls
+            
+            time.sleep(15) # wait for 15 seconds before making the next request, 4 req / min restriction
+            
+            # update progress bar
+            pbar.update(1)
 
 ```
