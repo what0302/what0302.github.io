@@ -43,7 +43,6 @@ IP 검색, 도메인 검색, 파일 해시값 검색에 해당하는 코드이�
 
 ### 1. IP 검색 코드
 ```python
-import tkinter as tk
 import csv
 import requests
 import urllib3
@@ -51,35 +50,27 @@ import time
 import socket
 from tqdm import tqdm
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+API_KEY = ''  # API 키
+IP_FILE = 'ip_list.txt'  # IP 주소 목록 파일
+OUTPUT_FILE = 'output_ip.csv'  # 결과 출력 파일
 
-API_KEY = '68ed9cb19fb0829ef224c3966086adbb0f6a475ba9ade58b335df99e56b8f12a' #sec-07-1
-IP_FILE = 'ip_list.txt'
-OUTPUT_FILE = 'output_ip.csv'
-
-def button_click_hash():
-    # 해시 검색 로직 추가
-    print("해쉬 검색 버튼이 클릭되었습니다.")
-
-def button_click_ip():
-    # Read IP addresses from file
-    with open(IP_FILE, 'r') as f:
-        ips = [line.strip() for line in f]
-
-    # Make API request for each IP address
+    # 각 IP 주소에 대한 API 요청 수행
     with open(OUTPUT_FILE, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(['IP', 'Detected', 'Engines', 'URL'])
 
-        seen_ips = set() # to track seen IPs
+        seen_ips = set()  # 이미 검색된 IP 주소 추적
+
+        # 진행 상태 표시를 위한 tqdm 사용
         with tqdm(total=len(ips)) as pbar:
             for i, ip in enumerate(ips):
-                if ip in seen_ips: # skip if already seen
+                if ip in seen_ips:  # 이미 검색된 IP는 건너뛰기
                     continue
                 
-                # Convert IP to URL format
+                # IP를 URL 형식으로 변환
                 url = f'http://{ip}/'
                 
+                # VirusTotal API 요청 파라미터
                 params = {'apikey': API_KEY, 'resource': url}
                 response = requests.get('https://www.virustotal.com/vtapi/v2/url/report', params=params, verify=False)
 
@@ -87,28 +78,18 @@ def button_click_ip():
                     data = response.json()
                     detected = data.get('positives', False)
                     engines = sorted([engine for engine in data.get('scans', {}).keys() if data['scans'][engine]['detected']])
-                    url = f'https://www.virustotal.com/gui/ip-address/{ip}' # URL for the IP address
+                    url = f'https://www.virustotal.com/gui/ip-address/{ip}'  # 검색된 IP 주소의 VirusTotal 페이지 URL
 
                     writer.writerow([ip, detected, '|'.join(engines), url])
                 else:
-                    print(f"Error: {response.status_code} {response.reason}")
+                    print(f"오류: {response.status_code} {response.reason}")
                 
-                seen_ips.add(ip) # add current IP to seen_ips
+                seen_ips.add(ip)  # 현재 IP를 검색된 IP 목록에 추가
                 
-                time.sleep(15) # wait for 15 seconds before making the next request, 4 req / min restriction
+                # 다음 요청 전에 15초 대기, 1분에 4개 요청 제한 준수
+                time.sleep(15)
                 
-                # update progress bar
+                # 진행 상태 업데이트
                 pbar.update(1)
-
-window = tk.Tk()
-window.title("VirusTotal 검색")
-
-button_hash = tk.Button(window, text="해쉬 검색", command=button_click_hash, width=50, height=3)
-button_hash.pack(side="left")
-
-button_ip = tk.Button(window, text="IP 검색", command=button_click_ip, width=50, height=3)
-button_ip.pack(side="left")
-
-window.mainloop()
 
 ```
