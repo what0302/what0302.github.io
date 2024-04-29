@@ -99,7 +99,7 @@ OUTPUT_FILE = 'output_ip.csv'  # 결과 출력 파일
 
 [1] 이는 IP 주소 난독화 (IP Address Obfuscation)라고 하며, 아주 기본적인 난독화 방법 중 하나이다.
 
-### 도메인 검색 코드 
+### 2. 도메인 검색 코드 
 ``` python
 import csv
 import requests
