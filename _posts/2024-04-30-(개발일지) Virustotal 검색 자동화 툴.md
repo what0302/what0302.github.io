@@ -97,6 +97,8 @@ OUTPUT_FILE = 'output_ip.csv'  # 결과 출력 파일
 내가 검색하고픈 IP 리스트를 ip_list.txt 파일에 넣은 후 코드를 실행하면, csv 파일에 [검색한 IP], [탐지 수], [탐지 엔진명], [virustotal 주소] 순으로 출력한다. 
 이때, 192[.]168[.]255[.]255 처럼 난독화¹된 값도 그대로 넣어도 상관없다.
 
+또한 프로그래밍 중 알게된건데, virustotal의 api 요청은 시간 당 제한 횟수가 정해져 있다. 그러므로 time.sleep 설정 없이 호출하게 되면 검색이 안되고 지나치는 경우가 생기기에 15초 대기를 설정해놨다.
+
 [1] 이는 IP 주소 난독화 (IP Address Obfuscation)라고 하며, 아주 기본적인 난독화 방법 중 하나이다.
 
 ### 2. 도메인 검색 코드 
@@ -125,7 +127,7 @@ with open(URL_FILE, 'r') as f:
 # 각 URL에 대해 API 요청 수행
 with open(OUTPUT_FILE, 'w', newline='') as f:
     writer = csv.writer(f)
-    writer.writerow(['URL', 'Detected', 'Engines', 'Search_URL']) # 컬럼 제목 쓰기
+    writer.writerow(['URL', 'Detected', 'Engines', 'Search_URL'])
 
     seen_urls = set() # 이미 본 URL을 추적하기 위한 집합
     with tqdm(total=len(urls)) as pbar: # 진행 상태 표시줄
@@ -138,7 +140,7 @@ with open(OUTPUT_FILE, 'w', newline='') as f:
 
             if response.status_code == 200:
                 data = response.json()
-                if isinstance(data, dict): # 응답 데이터가 사전인지 확인
+                if isinstance(data, dict): 
                     detected = data.get('positives', False)
                     engines = sorted([engine for engine in data.get('scans', {}).keys() if data['scans'][engine]['detected']])
                     search_url = f"https://www.virustotal.com/gui/url/{get_sha256_hash(url)}/detection"
@@ -155,5 +157,11 @@ with open(OUTPUT_FILE, 'w', newline='') as f:
             
             # 진행 상태 표시줄 업데이트
             pbar.update(1)
+
+```
+
+### 3. 파일 해시값 검색 코드
+
+```python
 
 ```
