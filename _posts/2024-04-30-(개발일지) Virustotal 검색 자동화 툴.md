@@ -226,11 +226,9 @@ import time
 import threading
 import hashlib
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-API_KEY_HASH = '6dee710beb0a24ed77d6ae6089fdda1c083e58143bb3985d8b44b48e57e661e7' #sec-07-2
-API_KEY_IP = '68ed9cb19fb0829ef224c3966086adbb0f6a475ba9ade58b335df99e56b8f12a' #sec-07-1
-API_KEY_URL = 'a144683199253ea9a9484a60f9c366c133271306b1c3ca887832bd83cce97017' #sec-07-1
+API_KEY_HASH = ''
+API_KEY_IP = '' 
+API_KEY_URL = '' 
 HASH_FILE = 'hash_list.txt'
 OUTPUT_FILE_HASH = 'output_hash.csv'
 IP_FILE = 'ip_list.txt'
@@ -246,7 +244,6 @@ def button_click_hash():
     thread = threading.Thread(target=perform_hash_search)
     thread.start()
 
-# ... (perform_hash_search 코드는 그대로입니다)
 def perform_hash_search():
     # Read hashes from file
     with open(HASH_FILE, 'r') as f:
