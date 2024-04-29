@@ -287,7 +287,7 @@ def perform_hash_search():
             progress = int(completed_hashes / total_hashes * 100)
             hash_progress.config(text=f"Hash 검색 진행상황: {progress}%")
 
-            time.sleep(15) # wait for 20 seconds before making the next request
+            time.sleep(15) # wait for 15 seconds before making the next request
 
     # 작업이 완료되면 업데이트 완료 메시지를 출력
     hash_progress.config(text="Hash 검색 완료")
