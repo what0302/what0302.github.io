@@ -425,11 +425,20 @@ window.mainloop()
 
 ```
 
-## 프로그램 동작 구현
+## (5) 프로그램 동작 구현
 ![image](https://github.com/what0302/what0302.github.io/assets/18510716/8d3fa323-6051-499a-bd3f-036bdab48819)
+
+Hash 검색, IP 검색, URL 검색을 할 수 있는 버튼이 각각 있다.
 
 ![image](https://github.com/what0302/what0302.github.io/assets/18510716/319a5a82-4c87-4667-9acd-826f1eb01250)
 
+해당 버튼을 누르면 각각의 진행상황이 표시된다.
+
 ![image](https://github.com/what0302/what0302.github.io/assets/18510716/68881073-7860-4324-baa6-88a90bbc881b)
 
+각각의 프로세스가 완료되면 "검색 완료" 문구가 뜬다.
+
 ![image](https://github.com/what0302/what0302.github.io/assets/18510716/045779c1-5d44-47fa-b810-98919b4cdfc8)
+
+이후 결과 파일에서 검색 결과를 확인해 볼 수 있다.
+
