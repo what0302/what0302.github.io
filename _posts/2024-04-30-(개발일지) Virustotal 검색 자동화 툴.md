@@ -424,3 +424,12 @@ url_progress.pack()
 window.mainloop()
 
 ```
+
+## 프로그램 동작 구현
+![image](https://github.com/what0302/what0302.github.io/assets/18510716/8d3fa323-6051-499a-bd3f-036bdab48819)
+
+![image](https://github.com/what0302/what0302.github.io/assets/18510716/319a5a82-4c87-4667-9acd-826f1eb01250)
+
+![image](https://github.com/what0302/what0302.github.io/assets/18510716/68881073-7860-4324-baa6-88a90bbc881b)
+
+![image](https://github.com/what0302/what0302.github.io/assets/18510716/045779c1-5d44-47fa-b810-98919b4cdfc8)
