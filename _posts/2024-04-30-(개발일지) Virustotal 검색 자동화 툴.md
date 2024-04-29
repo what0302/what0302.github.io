@@ -163,5 +163,55 @@ with open(OUTPUT_FILE, 'w', newline='') as f:
 ### 3. 파일 해시값 검색 코드
 
 ```python
+import csv
+import requests
+import urllib3
+import time
+from tqdm import tqdm
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+API_KEY = '6dee710beb0a24ed77d6ae6089fdda1c083e58143bb3985d8b44b48e57e661e7' #sec-07-2
+HASH_FILE = 'hash_list.txt'
+OUTPUT_FILE = 'output_hash.csv'
+
+# Read hashes from file
+with open(HASH_FILE, 'r') as f:
+    hashes = [line.strip() for line in f]
+
+# Make API request for each hash
+with open(OUTPUT_FILE, 'w', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(['SHA256', 'MD5', 'SHA1', 'Type', 'Detected', 'Engines', 'URL'])
+
+    seen_hashes = set() # to track seen hashes
+    with tqdm(total=len(hashes)) as pbar:
+        for i, hash_val in enumerate(hashes):
+            if hash_val in seen_hashes: # skip if already seen
+                continue
+            
+            params = {'apikey': API_KEY, 'resource': hash_val}
+            response = requests.get('https://www.virustotal.com/vtapi/v2/file/report', params=params, verify=False)
+
+            if response.status_code == 200:
+                data = response.json()
+                sha256 = data.get('sha256', '')
+                md5 = data.get('md5', '')
+                sha1 = data.get('sha1', '')
+                file_type = data.get('type_description', '')
+                detected = data.get('positives', False)
+                engines = sorted([engine for engine in data.get('scans', {}).keys() if data['scans'][engine]['detected']])
+                url = f'https://www.virustotal.com/gui/file/{hash_val}/detection' # URL for the hash value
+
+                writer.writerow([sha256, md5, sha1, file_type, detected, '|'.join(engines), url])
+            else:
+                print(f"Error: {response.status_code} {response.reason}")
+            
+            seen_hashes.add(hash_val) # add current hash_val to seen_hashes
+            
+            time.sleep(20) # wait for 20 seconds before making the next request
+            
+            # update progress bar
+            pbar.update(1)
 
 ```
