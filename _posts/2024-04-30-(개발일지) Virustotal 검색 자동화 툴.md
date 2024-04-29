@@ -111,7 +111,7 @@ import hashlib
 from tqdm import tqdm
 
 
-API_KEY = ''
+API_KEY = '' # API 키
 URL_FILE = 'url_list.txt' # URL 목록이 저장된 파일
 OUTPUT_FILE = 'output_url.csv' # 결과를 저장할 CSV 파일 이름
 
@@ -169,25 +169,25 @@ import urllib3
 import time
 from tqdm import tqdm
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning) # SSL 인증서 경고 비활성화
 
-API_KEY = '6dee710beb0a24ed77d6ae6089fdda1c083e58143bb3985d8b44b48e57e661e7' #sec-07-2
-HASH_FILE = 'hash_list.txt'
-OUTPUT_FILE = 'output_hash.csv'
+API_KEY = '' # API 키
+HASH_FILE = 'hash_list.txt' # 해시 값을 담은 파일 이름
+OUTPUT_FILE = 'output_hash.csv' # 결과를 저장할 CSV 파일 이름
 
-# Read hashes from file
+# 파일에서 해시 값을 읽기
 with open(HASH_FILE, 'r') as f:
-    hashes = [line.strip() for line in f]
+    hashes = [line.strip() for line in f] # 각 줄에서 해시 값을 읽어 리스트에 저장
 
-# Make API request for each hash
+# 각 해시 값에 대한 API 요청 수행
 with open(OUTPUT_FILE, 'w', newline='') as f:
     writer = csv.writer(f)
-    writer.writerow(['SHA256', 'MD5', 'SHA1', 'Type', 'Detected', 'Engines', 'URL'])
+    writer.writerow(['SHA256', 'MD5', 'SHA1', 'Type', 'Detected', 'Engines', 'URL']) 
 
-    seen_hashes = set() # to track seen hashes
-    with tqdm(total=len(hashes)) as pbar:
+    seen_hashes = set() # 이미 처리한 해시 값을 추적하기 위한 집합
+    with tqdm(total=len(hashes)) as pbar: # 진행 상황을 표시하는 진행 바
         for i, hash_val in enumerate(hashes):
-            if hash_val in seen_hashes: # skip if already seen
+            if hash_val in seen_hashes: # 이미 처리된 해시 값은 건너뛰기
                 continue
             
             params = {'apikey': API_KEY, 'resource': hash_val}
@@ -201,17 +201,22 @@ with open(OUTPUT_FILE, 'w', newline='') as f:
                 file_type = data.get('type_description', '')
                 detected = data.get('positives', False)
                 engines = sorted([engine for engine in data.get('scans', {}).keys() if data['scans'][engine]['detected']])
-                url = f'https://www.virustotal.com/gui/file/{hash_val}/detection' # URL for the hash value
+                url = f'https://www.virustotal.com/gui/file/{hash_val}/detection' # 각 해시 값에 대한 검색 URL
 
                 writer.writerow([sha256, md5, sha1, file_type, detected, '|'.join(engines), url])
             else:
                 print(f"Error: {response.status_code} {response.reason}")
             
-            seen_hashes.add(hash_val) # add current hash_val to seen_hashes
+            seen_hashes.add(hash_val) # 현재 해시 값을 seen_hashes에 추가
             
-            time.sleep(20) # wait for 20 seconds before making the next request
+            time.sleep(15) # 다음 요청 전 15초 대기, 분당 4회 요청 제한
             
-            # update progress bar
+            # 진행 바 업데이트
             pbar.update(1)
+
+```
+
+### 4. 코드 병합 및 GUI 생성
+```python
 
 ```
