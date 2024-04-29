@@ -218,5 +218,212 @@ with open(OUTPUT_FILE, 'w', newline='') as f:
 
 ### 4. 코드 병합 및 GUI 생성
 ```python
+import tkinter as tk
+import csv
+import requests
+import urllib3
+import time
+import threading
+import hashlib
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+API_KEY_HASH = '6dee710beb0a24ed77d6ae6089fdda1c083e58143bb3985d8b44b48e57e661e7' #sec-07-2
+API_KEY_IP = '68ed9cb19fb0829ef224c3966086adbb0f6a475ba9ade58b335df99e56b8f12a' #sec-07-1
+API_KEY_URL = 'a144683199253ea9a9484a60f9c366c133271306b1c3ca887832bd83cce97017' #sec-07-1
+HASH_FILE = 'hash_list.txt'
+OUTPUT_FILE_HASH = 'output_hash.csv'
+IP_FILE = 'ip_list.txt'
+OUTPUT_FILE_IP = 'output_ip.csv'
+URL_FILE = 'url_list.txt'
+OUTPUT_FILE_URL = 'output_url.csv'
+
+def get_sha256_hash(text):
+    normalized_url = text.lower().replace('[', '').replace(']', '') # Normalize URL before hashing
+    return hashlib.sha256(normalized_url.encode()).hexdigest()
+
+def button_click_hash():
+    thread = threading.Thread(target=perform_hash_search)
+    thread.start()
+
+# ... (perform_hash_search 코드는 그대로입니다)
+def perform_hash_search():
+    # Read hashes from file
+    with open(HASH_FILE, 'r') as f:
+        hashes = [line.strip() for line in f]
+
+    total_hashes = len(hashes)  # 총 해시 개수
+    completed_hashes = 0  # 완료된 해시 개수
+
+    # Make API request for each hash
+    with open(OUTPUT_FILE_HASH, 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(['SHA256', 'MD5', 'SHA1', 'Type', 'Detected', 'Engines', 'URL'])
+
+        seen_hashes = set() # to track seen hashes
+        for i, hash_val in enumerate(hashes):
+            if hash_val in seen_hashes: # skip if already seen
+                continue
+
+            params = {'apikey': API_KEY_HASH, 'resource': hash_val}
+            response = requests.get('https://www.virustotal.com/vtapi/v2/file/report', params=params, verify=False)
+
+            if response.status_code == 200:
+                data = response.json()
+                sha256 = data.get('sha256', '')
+                md5 = data.get('md5', '')
+                sha1 = data.get('sha1', '')
+                file_type = data.get('type_description', '')
+                detected = data.get('positives', False)
+                engines = sorted([engine for engine in data.get('scans', {}).keys() if data['scans'][engine]['detected']])
+                url = f'https://www.virustotal.com/gui/file/{hash_val}/detection' # URL for the hash value
+
+                writer.writerow([sha256, md5, sha1, file_type, detected, '|'.join(engines), url])
+            else:
+                print(f"Error: {response.status_code} {response.reason}")
+
+            seen_hashes.add(hash_val) # add current hash_val to seen_hashes
+
+            completed_hashes += 1  # 완료된 해시 개수 업데이트
+
+            # update progress
+            progress = int(completed_hashes / total_hashes * 100)
+            hash_progress.config(text=f"Hash 검색 진행상황: {progress}%")
+
+            time.sleep(15) # wait for 20 seconds before making the next request
+
+    # 작업이 완료되면 업데이트 완료 메시지를 출력
+    hash_progress.config(text="Hash 검색 완료")
+
+def button_click_ip():
+    thread = threading.Thread(target=perform_ip_search)
+    thread.start()
+
+# ... (perform_ip_search 코드는 그대로입니다)
+def perform_ip_search():
+    # Read IP addresses from file
+    with open(IP_FILE, 'r') as f:
+        ips = [line.strip() for line in f]
+
+    total_ips = len(ips)  # 총 IP 개수
+    completed_ips = 0  # 완료된 IP 개수
+
+    # Make API request for each IP address
+    with open(OUTPUT_FILE_IP, 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(['IP', 'Detected', 'Engines', 'URL'])
+
+        seen_ips = set() # to track seen IPs
+        for i, ip in enumerate(ips):
+            if ip in seen_ips: # skip if already seen
+                continue
+
+            # Convert IP to URL format
+            url = f'http://{ip}/'
+
+            params = {'apikey': API_KEY_IP, 'resource': url}
+            response = requests.get('https://www.virustotal.com/vtapi/v2/url/report', params=params, verify=False)
+
+            if response.status_code == 200:
+                data = response.json()
+                detected = data.get('positives', False)
+                engines = sorted([engine for engine in data.get('scans', {}).keys() if data['scans'][engine]['detected']])
+                url = f'https://www.virustotal.com/gui/ip-address/{ip}' # URL for the IP address
+
+                writer.writerow([ip, detected, '|'.join(engines), url])
+            else:
+                print(f"Error: {response.status_code} {response.reason}")
+
+            seen_ips.add(ip) # add current IP to seen_ips
+
+            completed_ips += 1  # 완료된 IP 개수 업데이트
+
+            # update progress
+            progress = int(completed_ips / total_ips * 100)
+            ip_progress.config(text=f"IP 검색 진행상황: {progress}%")
+
+            time.sleep(15) # wait for 15 seconds before making the next request
+
+    # 작업이 완료되면 업데이트 완료 메시지를 출력
+    ip_progress.config(text="IP 검색 완료")
+
+def button_click_url():
+    thread = threading.Thread(target=perform_url_search)
+    thread.start()
+
+def perform_url_search():
+    # Read URLs from file
+    with open(URL_FILE, 'r') as f:
+        urls = [line.strip() for line in f]
+
+    total_urls = len(urls)  # 총 URL 개수
+    completed_urls = 0  # 완료된 URL 개수
+
+    # Make API request for each URL
+    with open(OUTPUT_FILE_URL, 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(['URL', 'Detected', 'Engines', 'Search_URL'])
+
+        seen_urls = set() # to track seen URLs
+        for i, url in enumerate(urls):
+            if url in seen_urls: # skip if already seen
+                continue
+
+            params = {'apikey': API_KEY_URL, 'resource': url}
+            response = requests.get('https://www.virustotal.com/vtapi/v2/url/report', params=params, verify=False)
+
+            if response.status_code == 200:
+                data = response.json()
+                if isinstance(data, dict): # Check if the response data is a dictionary
+                    detected = data.get('positives', False)
+                    engines = sorted([engine for engine in data.get('scans', {}).keys() if data['scans'][engine]['detected']])
+                    search_url = f"https://www.virustotal.com/gui/url/{get_sha256_hash(url)}/detection"
+
+                    writer.writerow([url, detected, '|'.join(engines), search_url])
+                else:
+                    print(f"Error: Unexpected response format {data}")
+            else:
+                print(f"Error: {response.status_code} {response.reason}")
+
+            seen_urls.add(url) # add current URL to seen_urls
+
+            completed_urls += 1  # 완료된 URL 개수 업데이트
+
+            # update progress
+            progress = int(completed_urls / total_urls * 100)
+            url_progress.config(text=f"URL 검색 진행상황: {progress}%")
+
+            time.sleep(15) # wait for 15 seconds before making the next request
+
+    # 작업이 완료되면 업데이트 완료 메시지를 출력
+    url_progress.config(text="URL 검색 완료")
+
+# Tkinter 창 생성
+window = tk.Tk()
+window.title("VirusTotal Search")
+window.geometry("400x300")
+
+# 버튼 생성
+hash_button = tk.Button(window, text="Hash 검색", width=20, height=2, command=button_click_hash)
+hash_button.pack(pady=10)
+
+ip_button = tk.Button(window, text="IP 검색", width=20, height=2, command=button_click_ip)
+ip_button.pack(pady=10)
+
+url_button = tk.Button(window, text="URL 검색", width=20, height=2, command=button_click_url)
+url_button.pack(pady=10)
+
+# 진행 상황 표시를 위한 레이블 생성
+hash_progress = tk.Label(window, text="Hash 검색 진행상황", width=30)
+hash_progress.pack()
+
+ip_progress = tk.Label(window, text="IP 검색 진행상황", width=30)
+ip_progress.pack()
+
+url_progress = tk.Label(window, text="URL 검색 진행상황", width=30)
+url_progress.pack()
+
+# Tkinter 이벤트 루프 시작
+window.mainloop()
 
 ```
