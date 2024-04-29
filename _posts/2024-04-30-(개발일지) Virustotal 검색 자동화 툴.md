@@ -108,30 +108,29 @@ import time
 import hashlib
 from tqdm import tqdm
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-API_KEY = 'a144683199253ea9a9484a60f9c366c133271306b1c3ca887832bd83cce97017' #sec-07-1
-URL_FILE = 'url_list.txt'
-OUTPUT_FILE = 'output_url.csv'
+API_KEY = ''
+URL_FILE = 'url_list.txt' # URL 목록이 저장된 파일
+OUTPUT_FILE = 'output_url.csv' # 결과를 저장할 CSV 파일 이름
 
-# Function to calculate SHA256 hash
+# SHA256 해시를 계산하는 함수
 def get_sha256_hash(text):
-    normalized_url = text.lower().replace('[', '').replace(']', '') # Normalize URL before hashing
+    normalized_url = text.lower().replace('[', '').replace(']', '') # URL을 정규화한 후 해싱
     return hashlib.sha256(normalized_url.encode()).hexdigest()
 
-# Read URLs from file
+# 파일에서 URL 읽기
 with open(URL_FILE, 'r') as f:
     urls = [line.strip() for line in f]
 
-# Make API request for each URL
+# 각 URL에 대해 API 요청 수행
 with open(OUTPUT_FILE, 'w', newline='') as f:
     writer = csv.writer(f)
-    writer.writerow(['URL', 'Detected', 'Engines', 'Search_URL'])
+    writer.writerow(['URL', 'Detected', 'Engines', 'Search_URL']) # 컬럼 제목 쓰기
 
-    seen_urls = set() # to track seen URLs
-    with tqdm(total=len(urls)) as pbar:
+    seen_urls = set() # 이미 본 URL을 추적하기 위한 집합
+    with tqdm(total=len(urls)) as pbar: # 진행 상태 표시줄
         for i, url in enumerate(urls):
-            if url in seen_urls: # skip if already seen
+            if url in seen_urls: # 이미 본 URL은 건너뛰기
                 continue
             
             params = {'apikey': API_KEY, 'resource': url}
@@ -139,22 +138,22 @@ with open(OUTPUT_FILE, 'w', newline='') as f:
 
             if response.status_code == 200:
                 data = response.json()
-                if isinstance(data, dict): # Check if the response data is a dictionary
+                if isinstance(data, dict): # 응답 데이터가 사전인지 확인
                     detected = data.get('positives', False)
                     engines = sorted([engine for engine in data.get('scans', {}).keys() if data['scans'][engine]['detected']])
                     search_url = f"https://www.virustotal.com/gui/url/{get_sha256_hash(url)}/detection"
 
                     writer.writerow([url, detected, '|'.join(engines), search_url])
                 else:
-                    print(f"Error: Unexpected response format {data}")
+                    print(f"오류: 예상치 못한 응답 형식 {data}")
             else:
-                print(f"Error: {response.status_code} {response.reason}")
+                print(f"오류: {response.status_code} {response.reason}")
             
-            seen_urls.add(url) # add current URL to seen_urls
+            seen_urls.add(url) # 현재 URL을 seen_urls에 추가
             
-            time.sleep(15) # wait for 15 seconds before making the next request, 4 req / min restriction
+            time.sleep(15) # 다음 요청 전 15초 대기, 분당 4회 요청 제한
             
-            # update progress bar
+            # 진행 상태 표시줄 업데이트
             pbar.update(1)
 
 ```
