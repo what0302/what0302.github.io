@@ -5,7 +5,7 @@ tags: [개발일지, Virustotal, Python]
 comments: true
 ---
 
-바이러스토탈 검색 자동화 툴 개발과정
+바이러스토탈 검색 자동화 툴 개발 과정
 
 ---
 ## (1) 개요
