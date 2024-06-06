@@ -6,6 +6,7 @@ comments: true
 ---
 
 SQL Injection의 개념과 공격 방식 로그인 편
+*https://jisu069.tistory.com/32
 ---
 
 ## (1) SQL 개념
