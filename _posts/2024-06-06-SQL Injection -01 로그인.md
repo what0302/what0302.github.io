@@ -6,7 +6,7 @@ comments: true
 ---
 
 SQL Injection의 개념과 공격 방식 로그인 편
-*https://jisu069.tistory.com/32
+
 ---
 
 ## (1) SQL 개념
@@ -90,9 +90,10 @@ SQL Injection 공격은 DB와 웹사이트가 연결된 모든 파라미터에�
 (1) `select * from table where id='eric' union select '1','2','3','4' # and password='1';`
 입력값 : eric' union select '1','2','3','4' #
 
--> SQL에서 union은 쿼리를 여러개 실행할 수 있게 만들어주는 문법임. 
+-> SQL에서 union은 쿼리를 여러개 실행할 수 있게 만들어주는 문법임.
 
-
+*https://jisu069.tistory.com/32
+*https://velog.io/@33bini/DB-SQL-Injection
 
 
 
