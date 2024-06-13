@@ -92,12 +92,6 @@ SQL Injection 공격은 DB와 웹사이트가 연결된 모든 파라미터에�
 
 -> SQL에서 union은 쿼리를 여러개 실행할 수 있게 만들어주는 문법임.
 
-*https://jisu069.tistory.com/32
-*https://velog.io/@33bini/DB-SQL-Injection
-
-
-
-
 
 
 
