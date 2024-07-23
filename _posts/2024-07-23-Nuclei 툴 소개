@@ -9,6 +9,7 @@ comments: true
 --- 
 
 ## (1) Nuclei란 무엇인가?
+nuclei 사용 가이드 : https://blog.projectdiscovery.io/ultimate-nuclei-guide/
 
 Nuclei는 광범위한 취약점 검사가 가능한 오픈소스 취약점 스캐닝 엔진임. 심각한 취약점에 대한 반복 검사를 진행하려는 버그 바운티 헌터, 침투 테스터들한테 인기를 끌고 있음.
 개인이 자유롭게 설정한 템플릿을 통해 Nuclei 하나로 모든 종류의 보안 검사를 모델링 할 수 있음.
@@ -25,7 +26,8 @@ Nuclei는 광범위한 취약점 검사가 가능한 오픈소스 취약점 스�
 템플릿 다운로드 : https://nuclei-templates.netlify.app/
 https://github.com/projectdiscovery/nuclei-templates/
 
-(2) 템플릿 작성 방법
+
+## (2) 템플릿 설명
 https://ott3rly.com/building-own-nuclei-templates/
 
 Nuclei 템플릿은 YAML로 작성되며, 키-값을 한 쌍으로 이루어 데이터를 설명하는 간단한 방법을 사용함. dns -> azure-takeover-detection.yaml 템플릿을 보면 3가지 주요 부분이 있음.
@@ -44,5 +46,44 @@ nuclei -u target.com -id azure-takeover-detection
 nuclei -u target.com -tags dns
 
 세 번째 부분은 이 템플릿이 어떻게 작동하는지를 설명한 부분임. 
+
+
+## (2) Neclei를 사용하는 이유
+https://bugbase.ai/blog/automating-bug-bounties-with-nuclei
+
+1. 타겟 스캐닝
+Nuclei는 사용자가 원하는대로 커스터마이징을 할 수 있는 장점이 가장 큼. 예를 들어, 대상 웹사이트가 "nginx" 서버를 사용하는 경우 "nginx" 에 대한 특정
+검사 워크플로우 템플릿을 만들면 시간을 절약하고 보다 집중적인 결과를 얻을 수 있음.
+
+다음과 같이 tag에 nginx라고 정의한 후에 
+
+nuclei -u target.com -tags nginx
+
+를 실행하면, 내가 nginx를 대상으로 점검하고 싶은 취약점 목록을 전부 검사할 수 있음.
+
+2. 취약점 최신화
+날마다 새로 발견되는 CVE, 0-Days 등에 대한 템플릿을 스스로 만들거나 빠르게 적용할 수 있는 장점이 있음.
+
+3. 취약점에 대한 PoC 구축
+취약점을 탐지하는 것 뿐만 아니라 PoC 데모를 위한 템플릿 제작도 가능함. 보안팀의 취약점 재현 노력을 간소화 할 수 있음.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
