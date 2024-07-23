@@ -1,0 +1,48 @@
+---
+layout: post
+title: "Nuclei 툴 소개"
+tags: [정보보안, 취약점분석, 툴]
+comments: true
+---
+
+오픈소스 취약점 스캐닝 엔진인 Nuclei에 대한 소개입니다.
+--- 
+
+## (1) Nuclei란 무엇인가?
+
+Nuclei는 광범위한 취약점 검사가 가능한 오픈소스 취약점 스캐닝 엔진임. 심각한 취약점에 대한 반복 검사를 진행하려는 버그 바운티 헌터, 침투 테스터들한테 인기를 끌고 있음.
+개인이 자유롭게 설정한 템플릿을 통해 Nuclei 하나로 모든 종류의 보안 검사를 모델링 할 수 있음.
+
+사용이 쉽다는 장점 때문에 누구나 템플릿을 다운받아서 공격을 진행할 수 있음. 최근 한국의 대학교와 기관을 공격한 "니엔" 텔레그램 그룹에서 사용한 엔진이 Nuclei임.
+
+일반적인 취약점 검색 도구와의 차별점은, 긍정 오류가 없다는 점임. 
+
+
+장점 :
+- 긍정 오류(false positives)가 0임
+- 웹 취약점 뿐만 아니라 TCP, DNS, HTTP, SSL, File, Whois, Websocket, Headless 등을 포함한 다양한 프로토콜의 스캔을 제공함
+
+템플릿 다운로드 : https://nuclei-templates.netlify.app/
+https://github.com/projectdiscovery/nuclei-templates/
+
+(2) 템플릿 작성 방법
+https://ott3rly.com/building-own-nuclei-templates/
+
+Nuclei 템플릿은 YAML로 작성되며, 키-값을 한 쌍으로 이루어 데이터를 설명하는 간단한 방법을 사용함. dns -> azure-takeover-detection.yaml 템플릿을 보면 3가지 주요 부분이 있음.
+
+첫 번째 부분은 템플릿의 ID임. 이는 템플릿의 고유 식별자임.
+
+해당 템플릿만 사용하고 싶을 경우에 활용하며 다음 명령어를 이용함
+
+nuclei -u target.com -id azure-takeover-detection 
+
+두 번째 부분은 템플릿의 info임. 이는 템플릿의 메타데이터를 나타냄. 템플릿의 이름, 작성자, 심각도(CVSS 점수), 설명, 래퍼런스 등이 있음.
+
+마지막 부분은 템플릿의 tag임. 이 부분은 특정 그룹의 템플릿을 실행하려고 할 때 사용되므로 필수로 들어가는 값임. 예를 들어, tag에 dns를 적고 다음과 같은 명령어를 사용하면,
+템플릿에 tag : dns라고 적혀있는 모든 템플릿이 익스플로잇됨.
+
+nuclei -u target.com -tags dns
+
+세 번째 부분은 이 템플릿이 어떻게 작동하는지를 설명한 부분임. 
+
+
