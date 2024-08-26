@@ -8,10 +8,10 @@
 <?php
     session_start();
         if ($_SESSION['login'] == "") {
-                $_SESSION[login] = "N";
-}
+                $_SESSION['login'] = "N";
+        }
 ?>
 
 ** 모바일 설정
 c > 사용자 > user > AndroidStudioProjects
-1. android studio koala 다운로드ddsa.dsjsd asjdbjaksbj
+1. android studio koala 다운로드
