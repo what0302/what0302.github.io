@@ -1,5 +1,17 @@
-
+** 웹 설정
 1. autoset 설치 -> 127.0.0.1 -> public_html 파일을 autoset10 설치 폴더에 붙여넣기 -> http://127.0.0.1/main.php
 2. autoset 백업 sql 데이터 가져오기 > 100acker.2024~ 파일찾기 > 제어 mysql 시작 > 127.0.0.1/phpmyadmin/ > id pw : root autoset
 3. 새 데이터베이스 만들기 100acker > 만들기
 4. autoset mysql 찾기 100acker에 100acker sql 파일 적용 > 다시 main.php로 들어가기 
+5. main.php 로그인 > id pw : test test
+추가 : 오토셋/루트디렉토리(public_html)/navbar.php 제일 상단에 다음 코드 추가
+<?php
+    session_start();
+        if ($_SESSION['login'] == "") {
+                $_SESSION[login] = "N";
+}
+?>
+
+** 모바일 설정
+c > 사용자 > user > AndroidStudioProjects
+1. android studio koala 다운로드ddsa.dsjsd asjdbjaksbj
