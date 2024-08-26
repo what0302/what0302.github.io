@@ -1,1 +1,5 @@
 
+1. autoset 설치 -> 127.0.0.1 -> public_html 파일을 autoset10 설치 폴더에 붙여넣기 -> http://127.0.0.1/main.php
+2. autoset 백업 sql 데이터 가져오기 > 100acker.2024~ 파일찾기 > 제어 mysql 시작 > 127.0.0.1/phpmyadmin/ > id pw : root autoset
+3. 새 데이터베이스 만들기 100acker > 만들기
+4. autoset mysql 찾기 100acker에 100acker sql 파일 적용 > 다시 main.php로 들어가기 
