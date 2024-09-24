@@ -2,3 +2,29 @@
 보안성 심의 - 웹사이트 서비스 전 심의
 SR - 새로운 서비스에 대한 페이지, 메뉴에 대한 심의
 ISMS-P - 인증을 위한 기술적 심
+
+
+
+모의해킹 주의사항:
+naver.com에 대한 모의해킹을 진행한다 했을 때, webtoon.naver.com과 같은 상위 도메인에 대한 해킹을 하지 않도록 주의
+회원가입 주소찾기의 경우 url이 우체국.com 인 경우도 있는데, 이 경우 union 공격을 하면 안됨 신고당함1. 모의해킹 업무 - 보안성 심의, ISMS-P, SR
+보안성 심의 - 웹사이트 서비스 전 심의
+SR - 새로운 서비스에 대한 페이지, 메뉴에 대한 심의
+ISMS-P - 인증을 위한 기술적 심
+
+
+
+모의해킹 주의사항:
+naver.com에 대한 모의해킹을 진행한다 했을 때, webtoon.naver.com과 같은 상위 도메인에 대한 해킹을 하지 않도록 주의
+회원가입 주소찾기의 경우 url이 우체국.com 인 경우도 있는데, 이 경우 union 공격을 하면 안됨 신고당함
+
+pentestmonkeyt > db sql injection 치트 시트
+
+sql
+프론트엔드(html, css) 백엔드(php, asp)
+python, javascript, java, C,  
+
+
+blind sql = 관리자' and (select count(table_name) from information_schema.tables) < 86 #
+
+sas' or 1=1 #
