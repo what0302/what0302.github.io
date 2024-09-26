@@ -166,6 +166,14 @@ grep sas -i *
 grep sas -i -R *
 grep sas -i -R -n*
 
+cut -c 1-5 /etc/passwd
+cut -d ":" -f 1 /etc/passwd
+cut -d ":" -f 6 /etc/passwd
+
+awk {print} /etc/passwd
+awk -F ':' '{print $1}' /etc/passwd
+awk -F ':' '{print $6}' /etc/passwd
+awk -F ':' '{print "ID:" $1}' /etc/passwd
 
 
 
