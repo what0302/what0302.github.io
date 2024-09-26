@@ -128,3 +128,36 @@ Content-Disposition: form-data; name="content"
 ------WebKitFormBoundaryvNc3w5VLMU4OrJW7--
 
 ##stored 크사 게시판 html 이용 : <img src="#" onerror="alert('XSS')"> 또는 <script>alert("xss");</script>
+
+
+
+
+
+##kali linux
+kali-linux-2024.3-vmware-amd64.vmwarevm 설치/ google kali linux
+
+sudo apt-get install tree
+tree -L 1
+
+which passwd
+which -a passwd
+locate *flag.*
+locate *flag.* -c 개수 출력
+
+mkdir test
+ls -alh 
+
+cd test
+touch flag.txt
+sudo chown kali:kali flag.txt
+
+echo "This is a flag file" | sudo tee flag.txt
+find / -type f -user kali -name *flag.* -ls
+find / -type f \( -perm -4000 -o -perm -2000 \) -ls
+
+which passwd 
+ls -l /usr/bin/passwd
+
+
+
+
