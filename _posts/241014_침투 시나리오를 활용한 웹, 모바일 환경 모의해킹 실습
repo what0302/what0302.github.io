@@ -22,6 +22,20 @@ useworld.ddns.net
 6. Visual Studio Code
   VSCode 검색 - Downlaod - Windows 다운로드
 
+- 오라클 설치 오류 관련 
+
+설치 도중 에러메시지 팝업창 닫고
+재시도, 중지 창에서 멈춘 상태로
+
+C:\app\user\product\21c\dbhomeXE\assistants\dbca\templates\XE_Database.dbc
+
+파일 열어서
+<initParams> 맨 아래에
+
+<initParam name="cpu_count" value="2"/>
+
+추가 후 재시도 클릭
+
 
 
 
