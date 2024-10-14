@@ -1,12 +1,35 @@
   김세용 수석
 - SK쉴더스 EQST Lab, 신규 취약점 연구
 
+useworld.ddns.net
+
 환경설정
 1. Oracle DB
-- 구글 : Oracle XE - Oracle Database XE 다운로드하기
+  Oracle XE 검색 - Oracle Database XE 다운로드하기
+
 2. Oracle Developer
-- 구글 : Orecle Developer 검색 - Download - 2번째 다운로드 JDK incluede
-3. Burpsuite Community Edition
+  Oracle Developer 검색 - Downlaod - 2번째꺼 JDK Include
+
+3. BurpSuite Community Edition
+ Burpsuite 검색 - Download - Go straight to downloads - 
+
 4. Python
-5. D2Coding or 나눔고딕코딩 폰트
+  Python 검색 - Download - Download Python 3.13.0
+
+5. D2Coding, 나눔고딕코딩 폰트
+ D2Coding 검색 - 우측에 Release - 아래 Assets에 첫번째꺼 D2Coding.....zip
+
 6. Visual Studio Code
+  VSCode 검색 - Downlaod - Windows 다운로드
+
+
+
+
+1. 웹 기초
+http : 웹의 껍데기를 표현함
+javascript : 웹의 동적인 부분을 담당. 클릭했을 때의 상호작용, 마우스를 올렸을 때의 사용호작용 등
+css : 웹의 디자인을 담당
+
+SPA(Single Page Application)
+
+oracle db 설치하기 전에 사용자 이름이 영어로 되어 있는지 확인. passwd test1234
