@@ -1,1 +1,12 @@
+  김세용 수석
+- SK쉴더스 EQST Lab, 신규 취약점 연구
 
+환경설정
+1. Oracle DB
+- 구글 : Oracle XE - Oracle Database XE 다운로드하기
+2. Oracle Developer
+- 구글 : Orecle Developer 검색 - Download - 2번째 다운로드 JDK incluede
+3. Burpsuite Community Edition
+4. Python
+5. D2Coding or 나눔고딕코딩 폰트
+6. Visual Studio Code
