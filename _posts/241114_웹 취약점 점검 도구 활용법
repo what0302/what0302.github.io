@@ -111,5 +111,7 @@ B게시판에 2.txt : bboard/files/2.txt
 ===> 원본 파일과 바뀐 파일 이름이 맵핑되어 저장되어있을 것으로 추측, DB 저장(?)
 
 
+inurl:co.kr intitle:"index of"
+inurl:co.kr intitle:"admin"
 
 CF) 192.168.110.87
