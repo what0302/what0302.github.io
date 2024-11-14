@@ -114,4 +114,20 @@ B게시판에 2.txt : bboard/files/2.txt
 inurl:co.kr intitle:"index of"
 inurl:co.kr intitle:"admin"
 
+<관리자 페이지 노출 점검>
+_download.php
+_core
+_admin
+_administrator
+_kisec
+_kisecadmin
+_adminkisec
+
+<데이터 평문 전송 점검>
+- Burp Suite에서는 암호화 전에 intercept했기 때문에 점검 방식이 맞지 않음
+=> wireshark에서 검증해야 함.
+1. 와이어샤크 실행 후 로컬 네트워크 혹은 wifi 연결
+2. 필터링을 통해서 데이터 평문 전송 여부 확인
+=> http.request.method == "POST"
+
 CF) 192.168.110.87
