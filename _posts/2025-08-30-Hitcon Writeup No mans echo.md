@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Hitcon Writeup(No mans echo)"
+title: "Hitcon Writeup No mans echo"
 tags: [정보보안, CTF]
 comments: true
 ---
