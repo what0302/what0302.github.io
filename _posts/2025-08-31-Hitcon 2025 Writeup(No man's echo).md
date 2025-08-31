@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Hitcon 2025 Writeup (No mans echo)"
+title: "Hitcon 2025 Writeup (No man's echo)"
 tags: [정보보안, CTF]
 comments: true
 ---
