@@ -165,7 +165,7 @@ JSON 페이로드를 보내기 위해 URL를 구성하고 페이로드와 헤더
 def send_attack(probe_start):
     url = f"{TARGET_URL}?probe={probe_start}"
     payload = payload_template.format(MAG)
-    headers = {"Content-Type": "application/json"}
+    headers = {"Content-Type": "application/json"}```
 
 응답의 HTTP 상태 코드가 200이고 응답 본문에 `"__HIT__"`가 포함되어 있으면 공격 성공으로 간주하여 `flag`값을 출력함
 
