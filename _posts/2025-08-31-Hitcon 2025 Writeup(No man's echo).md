@@ -5,7 +5,7 @@ tags: [정보보안, CTF]
 comments: true
 ---
 
-2025 Hitcon Wirteup 입니다
+2025 Hitcon Writeup 입니다
 
 --- 
 
