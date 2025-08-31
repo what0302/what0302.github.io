@@ -8,8 +8,9 @@ permalink: /about/
 
 
 ### More Information
-
 - 한국통신인터넷기술 2년차 재직중
+- 학점은행제 정보보호학 졸
+- 유한대학교 IT비즈니스 졸
 
 ### Contact me
 
