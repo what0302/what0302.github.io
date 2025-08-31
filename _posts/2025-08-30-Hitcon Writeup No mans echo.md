@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Hitcon Writeup No mans echo"
-tags: [정보보안, CTF]
+tags: [정보보안]
 comments: true
 ---
 
