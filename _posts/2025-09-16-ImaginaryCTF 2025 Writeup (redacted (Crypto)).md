@@ -20,7 +20,7 @@ Cyberchef에서 XOR Key와 Input에 특정 문자열을 입력한 형태임. Out
 
 ictf{...} 문자열을 각각 입력한 것으로 추측할 수 있음.
 
-문제 이미지에서 보이는 key 오른쪽의 hex는 key를 어떤식으로 해석할지 선택하는 부분임. XOR에서 key와 input이 동일하면 00 00 00 .. 이 출력되는데, 이 경우 key를 hex로 해석하기 때문에 다른 결과가 나옴. 
+문제 이미지에서 보이는 key 오른쪽의 hex는 key를 어떤식으로 해석할지 선택하는 부분임. XOR에서 key와 input이 동일하면 00 00 00 .. 이 출력되는데, 이 문제의 경우는 key를 hex로 해석하기 때문에 다른 결과가 나옴. 
 
 Scheme에 Standard는 반복키 XOR(repeating-key XOR)에 해당됨.
 
