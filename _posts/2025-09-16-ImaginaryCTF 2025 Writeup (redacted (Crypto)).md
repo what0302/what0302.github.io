@@ -1,4 +1,4 @@
-[crypto.py](https://github.com/user-attachments/files/22363968/crypto.py)---
+---
 layout: post
 title: "ImaginaryCTF 2025 Writeup (redacted (Crypto))"
 tags: [정보보안, CTF]
@@ -85,3 +85,8 @@ return sols
 - 해당 조건에 만족하는 후보를 모두 출력
 
 전체 코드
+[crypto.py](https://github.com/user-attachments/files/22364213/crypto.py)
+
+<img width="464" height="426" alt="스크린샷 2025-09-16 오후 10 53 08" src="https://github.com/user-attachments/assets/85e78024-8b11-48df-b806-2d1f138ddeb4" />
+
+실행시키면 후보에 해당하는 플래그 값이 출력되고, 이 중 `ictf{xor_is_bad_bad_encryption}`이 정답임
