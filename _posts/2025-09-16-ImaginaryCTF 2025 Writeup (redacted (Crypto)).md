@@ -81,7 +81,7 @@ return sols
 ```
 
 - 후보 키들의 모든 조합을 brute force
-- 각 키로 전체 길이의 키 스트림 kfull을 만들고 p = C ⊕ kfull를 계산
+- 각 키로 전체 길이의 키 스트림 kfull을 만들고 `p = C ⊕ kfull`를 계산
 - 해당 조건에 만족하는 후보를 모두 출력
 
 전체 코드
