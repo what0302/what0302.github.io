@@ -1,17 +1,37 @@
 from pathlib import Path
 import os
+import subprocess
 
 from Cryptodome.Cipher import AES, PKCS1_OAEP
 from Cryptodome.PublicKey import RSA
 from Cryptodome.Hash import SHA256
 
 
-ROOT = Path.home() / "Desktop" / "RansomDemo"
-TARGET_DIR = ROOT / "targets"
-BACKUP_DIR = ROOT / ".safety_backup"
-RUNTIME_DIR = ROOT / ".runtime"
+ROOT = (
+    Path.home()
+    / "Desktop"
+    / "RansomDemo"
+)
 
-PRIVATE_KEY_FILE = RUNTIME_DIR / "private.pem"
+TARGET_DIR = (
+    ROOT
+    / "targets"
+)
+
+BACKUP_DIR = (
+    ROOT
+    / ".safety_backup"
+)
+
+RUNTIME_DIR = (
+    ROOT
+    / ".runtime"
+)
+
+PRIVATE_KEY_FILE = (
+    RUNTIME_DIR
+    / "private.pem"
+)
 
 TARGET_FILES = [
     "personal_notes.txt",
@@ -25,9 +45,10 @@ MAGIC = b"UNTDEMO1"
 
 
 def decrypt_file(filename):
+
     encrypted = (
         TARGET_DIR /
-        f"{filename}.unt"
+        (filename + ".unt")
     )
 
     output = (
@@ -36,59 +57,76 @@ def decrypt_file(filename):
     )
 
     if not encrypted.exists():
+
         print(
             f"[SKIP] {filename}: "
-            "encrypted file not found"
+            "encrypted file missing"
         )
+
         return False
 
     if encrypted.is_symlink():
+
         print(
             f"[SKIP] {filename}: "
-            "symbolic links are not allowed"
+            "symlink rejected"
         )
+
         return False
 
     private_key = RSA.import_key(
         PRIVATE_KEY_FILE.read_bytes()
     )
 
-    with encrypted.open("rb") as f:
+    with encrypted.open(
+        "rb"
+    ) as f:
+
         magic = f.read(
             len(MAGIC)
         )
 
         if magic != MAGIC:
+
             raise ValueError(
-                "Invalid training file header"
+                "Invalid UNT training file"
             )
 
-        wrapped_key_length = int.from_bytes(
-            f.read(2),
-            "big"
+        encrypted_key_length = (
+            int.from_bytes(
+                f.read(2),
+                "big"
+            )
         )
 
-        if wrapped_key_length <= 0:
+        if encrypted_key_length <= 0:
+
             raise ValueError(
-                "Invalid wrapped key length"
+                "Invalid encrypted key"
             )
 
-        wrapped_key = f.read(
-            wrapped_key_length
+        encrypted_aes_key = (
+            f.read(
+                encrypted_key_length
+            )
         )
 
-        nonce_length = int.from_bytes(
-            f.read(1),
-            "big"
+        nonce_length = (
+            int.from_bytes(
+                f.read(1),
+                "big"
+            )
         )
 
         nonce = f.read(
             nonce_length
         )
 
-        tag_length = int.from_bytes(
-            f.read(1),
-            "big"
+        tag_length = (
+            int.from_bytes(
+                f.read(1),
+                "big"
+            )
         )
 
         tag = f.read(
@@ -102,8 +140,10 @@ def decrypt_file(filename):
         hashAlgo=SHA256
     )
 
-    aes_key = rsa_cipher.decrypt(
-        wrapped_key
+    aes_key = (
+        rsa_cipher.decrypt(
+            encrypted_aes_key
+        )
     )
 
     aes_cipher = AES.new(
@@ -112,27 +152,29 @@ def decrypt_file(filename):
         nonce=nonce
     )
 
-    # This both decrypts and verifies integrity.
-    plaintext = aes_cipher.decrypt_and_verify(
-        ciphertext,
-        tag
+    plaintext = (
+        aes_cipher.decrypt_and_verify(
+            ciphertext,
+            tag
+        )
     )
 
-    temporary = output.with_suffix(
-        output.suffix + ".recovering"
+    temporary = (
+        TARGET_DIR /
+        (filename + ".recovering")
     )
 
     temporary.write_bytes(
         plaintext
     )
 
+    # Atomic restore.
     os.replace(
         temporary,
         output
     )
 
-    # Delete only the corresponding DEMO .unt file,
-    # and only after successful authenticated decryption.
+    # Remove .unt only after verified recovery.
     encrypted.unlink()
 
     print(
@@ -143,13 +185,14 @@ def decrypt_file(filename):
 
 
 def main():
+
     print()
     print(
         "=========================================="
     )
 
     print(
-        " SECURITY AWARENESS TRAINING RECOVERY"
+        " SECURITY TRAINING RECOVERY UTILITY"
     )
 
     print(
@@ -157,41 +200,73 @@ def main():
     )
 
     if not PRIVATE_KEY_FILE.exists():
+
         print(
-            "[ERROR] Training private key not found."
+            "[ERROR] Training private "
+            "key not found"
         )
+
         return
 
     recovered = 0
 
     for filename in TARGET_FILES:
+
         try:
-            if decrypt_file(filename):
+
+            if decrypt_file(
+                filename
+            ):
+
                 recovered += 1
 
         except Exception as error:
+
             print(
-                f"[FAILED] {filename}: {error}"
+                f"[FAILED] "
+                f"{filename}: "
+                f"{error}"
             )
 
     print()
-    print(
-        f"[+] Recovery completed: "
-        f"{recovered}/{len(TARGET_FILES)} files"
-    )
 
     print(
-        "[+] Safety backups remain in:"
+        f"[+] Recovery completed: "
+        f"{recovered}/"
+        f"{len(TARGET_FILES)}"
+    )
+
+    print()
+
+    if recovered == len(
+        TARGET_FILES
+    ):
+
+        print(
+            "[+] All demo files restored."
+        )
+
+    print(
+        "[+] Safety backup remains:"
     )
 
     print(
         f"    {BACKUP_DIR}"
     )
 
-    print()
-    print(
-        "Training simulation complete."
-    )
+    # Open the folder after recovery
+    # so the restored filenames are visible.
+    try:
+
+        subprocess.Popen(
+            [
+                "xdg-open",
+                str(TARGET_DIR)
+            ]
+        )
+
+    except Exception:
+        pass
 
 
 if __name__ == "__main__":
