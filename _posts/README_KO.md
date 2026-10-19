@@ -1,46 +1,38 @@
-# CSCE 5550 실습용 GitHub + Rubber Ducky 데모
+# CSCE 5550 — Variant 1 key separation (safe copy-only demonstration)
 
-현재 버전은 **원본을 암호화하거나 삭제하지 않고**, 지정한 프로젝트 폴더를 재귀적으로 읽어서 별도 폴더에 암호화 복사본을 만듭니다. 실제 공격 프로그램이 아닌 안전한 교육용 시뮬레이션입니다.
+## 변경 내용
+- RSA 키는 Kali VM이 아닌 **Windows / 별도 실습 환경**에서 `keygen_offline.py`로 한 번 생성합니다.
+- Kali 암호화 데모에는 **공개키 `public.pem`만** 전달합니다.
+- 개인키 `private.pem`은 GitHub에 올리지 않고 Windows에 보관했다가, 복호화 시연 시에만 Kali VM에 수동으로 전달합니다.
+- `encrypt.py`는 `critical_EUID` 안의 파일을 재귀 탐색하고, 원본을 변경하지 않고 `encrypted_output/`에 암호화된 복사본을 저장합니다.
+- `decrypt.py`는 별도 제공된 `private.pem`으로 `recovered_output/`에 복원하고 SHA-256을 확인합니다.
+- 따라서 강의안의 **공개키/개인키 역할 분리**를 보여주는 안전한 실습판입니다. 단, 키를 프로그램 안에 hardcode하라는 Variant 1의 세부 조건 및 원본 디렉터리 직접 암호화 조건을 그대로 구현한 것은 아닙니다.
 
-## 구성
-- `setup_lab.py`: `~/Desktop/RansomDemo/critical_EUID` 안에 테스트 폴더와 파일 생성 (최종 제출 때 `EUID`를 실제 값으로 바꾸고 교수님이 지정한 문서 사용)
-- `keygen.py`: RSA 키를 `~/Desktop/RansomDemo/keys/`에 생성
-- `encrypt.py`: 대상 폴더 파일을 재귀적으로 읽어 `encrypted_output`에 `.unt` 암호화 복사본 생성, SHA-256 기록
-- `decrypt.py`: `recovered_output`에 복구하여 SHA-256 비교
-- `demo_encrypt.py`: GitHub에서 `encrypt.py`를 다운로드해 실행하고 마스코트/카운트다운/복구 GUI 제공
-- `recovery_code.txt`: 예시 복구 코드 (공개 저장소 파일이므로 실제 보안 비밀 아님)
-- `unt_mascot.png`: UNT 이미지
-- `payload_ducky.txt`: 본인 Kali VM에서만 사용하는 키보드 입력 자동화 예시
+## Windows 준비
+1. Windows에 Python 및 `pycryptodomex` 설치: `py -m pip install pycryptodomex`
+2. `py keygen_offline.py` 실행.
+3. `keys_offline/public.pem`만 Kali VM의 `~/Desktop/RansomDemo/keys/public.pem`에 복사합니다.
+4. `keys_offline/private.pem`은 Windows에 보관합니다. **GitHub, 공개 ZIP, 공개 저장소에 업로드하지 마세요.**
 
-## 먼저 Kali에서 준비
-```
-sudo apt install python3-pycryptodomex python3-pil python3-pil.imagetk
-mkdir -p ~/Desktop/RansomDemo
-```
-
-`setup_lab.py`와 `keygen.py`를 Kali의 `~/Desktop/RansomDemo/` 안에 복사하거나 GitHub에서 내려받은 뒤 **직접 실행**:
-```
-python3 ~/Desktop/RansomDemo/setup_lab.py
-python3 ~/Desktop/RansomDemo/keygen.py
+## Kali 준비
+```bash
+mkdir -p ~/Desktop/RansomDemo/keys
+sudo apt install python3-pycryptodome python3-pil python3-pil.imagetk
 ```
 
-## GitHub 업로드
-이 폴더에서 `demo_encrypt.py`, `encrypt.py`, `decrypt.py`, `unt_mascot.png`, `recovery_code.txt` 파일을 본인 저장소의 `_posts/`에 업로드. 위 코드의 URL은 `what0302/what0302.github.io/master`를 기준으로 작성됨.
+Kali에서 이미 만들어진 공개키가 있는지 확인:
+```bash
+ls -lh ~/Desktop/RansomDemo/keys/public.pem
+```
 
-`setup_lab.py`, `keygen.py`는 별도로 준비하는 초기 세팅 단계이며, 매 실행 때 실행하지 않음.
+필요 시 `setup_lab.py`로 샘플 폴더를 만들 수 있으나 기본 폴더명은 `critical_EUID`입니다. 실제 학생 EUID를 쓰려면 `setup_lab.py`와 `encrypt.py`의 폴더명을 일치시키세요. 실제 PDF는 수동 배치하십시오.
 
-## 실행
-1. VM 스냅샷을 생성하고 본인이 소유한 Kali 게스트 VM을 전면에 둠.
-2. `payload_ducky.txt`를 Hak5 Payload Studio로 컴파일하여 사용.
-3. GitHub의 프로그램을 가져와 `encrypted_output`에 암호문 복사본을 생성하고 GUI 표시.
-4. `VIEW ENCRYPTED COPIES`에서 `.unt` 확인.
-5. 복구 코드 입력 → GitHub `decrypt.py` 다운로드 후 `recovered_output` 생성 및 SHA-256 검증.
+## 시연
+- 이전과 같은 GitHub 파일명인 `demo_encrypt.py`, `encrypt.py`, `decrypt.py`, `unt_mascot.png`, `recovery_code.txt`를 활용합니다.
+- 기존 Rubber Ducky 스크립트의 GUI 시작 흐름은 유지하되, 이 버전의 암호화는 **원본을 보존하는 복사본 실습**입니다.
+- 복호화 직전에만 Windows에 있는 `private.pem`을 Kali `~/Desktop/RansomDemo/keys/private.pem`으로 수동 복사하십시오.
+- Kali `~/Desktop/RansomDemo/keys/private.pem`을 사전에 두지 않으면 복구 버튼이 실패하는 것이 정상입니다.
+- 시연이 끝나면 Kali에 전달했던 개인키 복사본을 제거하고, VM 스냅샷으로 되돌리는 것을 권장합니다.
 
-## 반복 실습
-`encrypted_output` 및 `recovered_output`을 **확인한 다음 별도로 보관하거나 삭제**하고 다시 시연하세요. 원본 `critical_EUID` 폴더는 그대로 남습니다. 키 파일은 분실하면 안 됩니다.
-
-## 과제에서 추가로 필요한 것
-- 실제 EUID 및 과제 지정 문서/폴더를 사용해야 함.
-- 이 버전은 암호문 복사본을 생성하므로 교수님이 명시한 '원본 대상 디렉터리 직접 암호화' 시나리오와 차이가 있음.
-- Monitoring / Detection / Mitigation은 현재 포함하지 않았음.
-- 최종 제출에 필요한 README, 주석, 라이브러리 링크, 작동 검증, 보고서, 발표 영상 별도 준비.
+## 강의안과 차이
+교수님 슬라이드 Variant 1은 encryptor 내 pk / decryptor 내 sk 하드코딩을 예시로 듭니다. 이 ZIP은 **개인키 비공개 유지 및 공격자 측 KeyGen 위치**만 우선 반영했습니다. 직접 원본을 잠그거나 USB로 파괴적 암호화를 자동 실행하는 구조는 포함하지 않습니다.

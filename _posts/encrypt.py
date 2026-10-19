@@ -14,7 +14,7 @@ public_file = base / 'keys' / 'public.pem'
 if not source.is_dir() or source.is_symlink():
     raise SystemExit('Training folder missing or invalid')
 if not public_file.is_file():
-    raise SystemExit('Run keygen.py first')
+    raise SystemExit('Missing public.pem. Copy only the public key to Kali keys folder.')
 if output.exists():
     raise SystemExit('encrypted_output already exists. Move it before another run.')
 

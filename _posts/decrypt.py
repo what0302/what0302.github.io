@@ -11,7 +11,7 @@ output = base / 'recovered_output'
 key_file = base / 'keys' / 'private.pem'
 
 if not encrypted_dir.is_dir() or encrypted_dir.is_symlink() or not key_file.is_file():
-    raise SystemExit('Encrypted demo or private key not found')
+    raise SystemExit('Encrypted copies or offline private key not found. Provide private.pem only during recovery demo.')
 if output.exists():
     raise SystemExit('recovered_output already exists. Move it before another run.')
 
