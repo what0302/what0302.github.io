@@ -1,4 +1,3 @@
-REM For the user's own isolated Kali VM. Copy-only training demo.
 DELAY 500
 ALT F2
 DELAY 300
