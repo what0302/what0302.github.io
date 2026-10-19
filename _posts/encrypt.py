@@ -7,7 +7,7 @@ from Cryptodome.Hash import SHA256
 from Cryptodome.Random import get_random_bytes
 
 base = Path.home() / 'Desktop' / 'RansomDemo'
-source = base / 'critical_EUID'
+source = base / 'critical_tk0667'
 output = base / 'encrypted_output'
 public_file = base / 'keys' / 'public.pem'
 
