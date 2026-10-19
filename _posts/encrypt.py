@@ -1,40 +1,61 @@
 from pathlib import Path
+import hashlib
+import json
+import shutil
 from Cryptodome.Cipher import AES, PKCS1_OAEP
 from Cryptodome.PublicKey import RSA
 from Cryptodome.Hash import SHA256
 from Cryptodome.Random import get_random_bytes
-import hashlib
-import json
 
-base = Path.home() / 'Desktop' / 'RansomDemo'
-folders = [p for p in base.glob('critical_*') if p.is_dir() and not p.is_symlink()]
-if len(folders) != 1:
-    raise SystemExit('Create exactly one critical_EUID training folder')
-source = folders[0]
-output = base / 'encrypted_output'
-key_file = base / 'keys' / 'public.pem'
-if not key_file.is_file() or key_file.is_symlink():
-    raise SystemExit('Missing keys/public.pem')
-if output.exists():
-    raise SystemExit('encrypted_output already exists; move it before rerunning')
-files = [p for p in sorted(source.rglob('*')) if p.is_file() and not p.is_symlink()]
-if not files:
-    raise SystemExit('No training files found')
-rsa = PKCS1_OAEP.new(RSA.import_key(key_file.read_bytes()), hashAlgo=SHA256)
+base = Path.home() / "Desktop" / "RansomDemo"
+source = base / "critical_tk0667"
+backup = base / "original_backup" / "critical_tk0667"
+manifest_file = base / "original_backup" / "manifest.json"
+public_file = base / "keys" / "public.pem"
+
+if not source.is_dir() or source.is_symlink():
+    raise SystemExit("Missing critical_tk0667 folder")
+if not public_file.is_file() or public_file.is_symlink():
+    raise SystemExit("Missing keys/public.pem")
+
+pdfs = sorted(p for p in source.rglob("*") if p.is_file() and p.suffix.lower() == ".pdf")
+if not pdfs:
+    raise SystemExit("No PDF files found")
+if any(p.is_symlink() or not p.resolve().is_relative_to(source.resolve()) for p in pdfs):
+    raise SystemExit("Unsafe PDF path")
+if any((p.parent / (p.name + ".unt")).exists() for p in pdfs):
+    if manifest_file.is_file() and all((p.parent / (p.name + ".unt")).is_file() for p in pdfs):
+        print("Already encrypted:", len(pdfs))
+        raise SystemExit(0)
+    raise SystemExit("Some .unt files already exist. Check the training folder")
+if manifest_file.exists():
+    raise SystemExit("Old manifest found. Save old test results before starting again")
+if any((backup / p.relative_to(source)).exists() for p in pdfs):
+    raise SystemExit("Backup files already exist. Do not overwrite them")
+
+rsa = PKCS1_OAEP.new(RSA.import_key(public_file.read_bytes()), hashAlgo=SHA256)
 items = []
-for path in files:
-    relative = path.relative_to(source)
-    if not path.resolve().is_relative_to(source.resolve()):
-        raise SystemExit('Invalid training file path')
-    content = path.read_bytes()
-    aes_key = get_random_bytes(32)
-    aes = AES.new(aes_key, AES.MODE_GCM)
-    encrypted, tag = aes.encrypt_and_digest(content)
-    wrapped = rsa.encrypt(aes_key)
-    dest = output / relative.parent / (relative.name + '.unt')
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    dest.write_bytes(len(wrapped).to_bytes(2, 'big') + wrapped + bytes([len(aes.nonce)]) + aes.nonce + tag + encrypted)
-    items.append({'file':relative.as_posix(), 'sha256':hashlib.sha256(content).hexdigest()})
-    print('Encrypted copy:', relative)
-(output / 'manifest.json').write_text(json.dumps(items, indent=2), encoding='utf-8')
-print('Completed:', len(items))
+for p in pdfs:
+    relative = p.relative_to(source)
+    target = backup / relative
+    target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(p, target)
+    sha = hashlib.sha256(p.read_bytes()).hexdigest()
+    if hashlib.sha256(target.read_bytes()).hexdigest() != sha:
+        raise SystemExit("Backup verification failed: " + str(relative))
+    items.append({"file": relative.as_posix(), "sha256": sha})
+
+manifest_file.parent.mkdir(parents=True, exist_ok=True)
+manifest_file.write_text(json.dumps(items, indent=2), encoding="utf-8")
+for p in pdfs:
+    content = p.read_bytes()
+    key = get_random_bytes(32)
+    aes = AES.new(key, AES.MODE_GCM)
+    ciphertext, tag = aes.encrypt_and_digest(content)
+    encrypted_key = rsa.encrypt(key)
+    payload = b"UNTDEMO2" + len(encrypted_key).to_bytes(2, "big") + encrypted_key
+    payload += bytes([len(aes.nonce)]) + aes.nonce + tag + ciphertext
+    destination = p.parent / (p.name + ".unt")
+    destination.write_bytes(payload)
+    print("Created:", destination)
+print("Done:", len(pdfs), "PDF encrypted copies")
