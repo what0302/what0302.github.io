@@ -1,71 +1,25 @@
-# CSCE5550 자동 암호화 복사본 실습
+# CSCE 5550 — 백업 우선, 원래 경로 복호화 실습
 
-## 목적
-Rubber Ducky로 Kali VM에서 `demo_encrypt.py` 실행 → GitHub에서 `encrypt.py` 받음 → `critical_tk0667`의 PDF를 재귀적으로 암호화해 **같은 폴더에 `.pdf.unt` 생성** → UNT GUI 표시 → GitHub 4자리 코드 확인 → `decrypt.py`와 실습 전용 개인키 다운로드 → `recovered_output`에 PDF 복원하고 SHA-256 검증.
+이 버전은 Kali VM의 `~/Desktop/RansomDemo/critical_tk0667/` 안에 있는 PDF를 재귀적으로 읽고 AES-256-GCM 암호문 `.pdf.unt`를 **같은 폴더**에 자동 생성합니다. 실행 시작점은 `demo_encrypt.py`이며 기존 GitHub / Rubber Ducky 다운로드 흐름을 사용할 수 있습니다.
 
-원본 PDF는 삭제·수정하지 않습니다. `original_backup/critical_tk0667`에 추가로 백업합니다. 실습 VM에서만 사용하세요.
+## 암호화 단계
+- 원본 PDF를 `~/Desktop/RansomDemo/original_backup/critical_tk0667/`에 복사하고 SHA-256을 `original_backup/manifest.json`에 기록합니다.
+- 별도 암호문 `.pdf.unt`를 각 PDF 옆에 생성합니다. **원본 PDF는 자동으로 이동하거나 삭제하지 않습니다.**
+- `.unt`는 AES-256-GCM 암호문과 RSA-OAEP로 암호화된 AES 키를 포함합니다.
 
-## GitHub에 넣을 파일
-`what0302.github.io/_posts/`에 `demo_encrypt.py`, `encrypt.py`, `decrypt.py`, `recovery_code.txt`, `recovery_private.pem`, `unt_mascot.png`를 올립니다. `payload_ducky.txt`는 DuckyScript 참고 파일입니다.
+## 원래 위치로 복구를 보여주는 시연
+1. 암호화가 끝난 후 `original_backup/`에 원본이 모두 있는지 확인합니다.
+2. **사용자가 수동으로** `critical_tk0667`의 PDF 원본을 다른 격리 폴더로 옮기고, `.pdf.unt`만 남겨 둡니다. 이를 자동화하지 않았습니다. 복구할 수 있도록 외부 백업을 추가로 보관하세요.
+3. GUI에서 4자리 복구 코드를 입력하면 공개 GitHub의 `recovery_code.txt`를 확인합니다.
+4. 일치하면 `decrypt.py`와 실습 전용 개인키를 내려받아 `.unt`를 실제 AES-GCM으로 해독합니다. GCM 인증 태그, manifest SHA-256, 별도 원본 백업 SHA-256이 모두 일치해야 합니다.
+5. 원본 PDF가 없는 경우 복호화한 내용으로 `critical_tk0667` **원래 경로에 PDF를 생성**합니다. PDF가 이미 있으면 덮어쓰지 않고 내용 일치 여부만 검증합니다.
+6. `.unt`는 증거로 남습니다. 따라서 파일 원본을 자동 제거하는 랜섬웨어가 아닙니다.
 
-GitHub에 공개한 `recovery_private.pem`과 4자리 숫자는 누구나 볼 수 있습니다. **실습 전용 RSA 키만 사용**하고 실제 보안 인증으로 간주하지 마세요.
+## GitHub
+`_posts`에 `demo_encrypt.py`, `encrypt.py`, `decrypt.py`, `recovery_code.txt`, `unt_mascot.png`를 업로드합니다. `recovery_private.pem`은 실습 전용이어야 하며 공개 저장소에 업로드하면 누구나 내려받을 수 있습니다. 키는 반드시 Kali의 `keys/public.pem`과 일치해야 합니다.
 
-## Windows에서 처음 한 번
-`py -m pip install pycryptodomex` 실행 후 `py keygen_offline.py`를 실행합니다. `keys_offline/public.pem`과 `keys_offline/recovery_private.pem`을 생성합니다. 기존 키를 덮어쓰지 않습니다.
-
-- `public.pem`: Kali `/home/kali/Desktop/RansomDemo/keys/public.pem`에 복사
-- `recovery_private.pem`: GitHub `_posts/`에 올림
-- `keygen_offline.py`: GitHub에 올릴 필요 없음
-
-공개키와 개인키는 **같은 실행에서 생성한 한 쌍**이어야 합니다.
-
-## Kali 준비
-```
-sudo apt update
-sudo apt install -y python3-pycryptodomex python3-pil python3-pil.imagetk
-mkdir -p ~/Desktop/RansomDemo/keys
-python3 -c "from Cryptodome.Cipher import AES; print('AES OK')"
-```
-
-대상 PDF들은 `/home/kali/Desktop/RansomDemo/critical_tk0667/` 아래에 둡니다. 하위 `folder1`, `folder2`, `folder3`의 PDF도 처리됩니다. 대상 폴더 외부의 파일은 처리하지 않습니다. `original_backup`과 `.runtime`은 대상 밖에 있습니다.
-
-## 자동 실행과 복구
-- `payload_ducky.txt`를 Hak5 Payload Studio에서 컴파일하여 **본인이 관리하는 Kali VM**에서만 실행하세요.
-- GitHub에서 `demo_encrypt.py`를 받고 실행하면, `encrypt.py`를 자동 다운로드하여 암호화 복사본부터 생성합니다.
-- 암호화 후 PDF 원본은 그대로 남고 `filename.pdf.unt`가 같은 폴더에 생성됩니다.
-- 성공하면 GUI의 `RECOVER FILES`에 `recovery_code.txt`의 4자리 숫자를 입력합니다.
-- 코드가 일치하면 `recovery_private.pem`, `decrypt.py`를 다운로드해 복호화하고 `recovered_output/critical_tk0667/`에 결과를 저장합니다.
-
-## 예상 구조
-```
-RansomDemo/
-  critical_tk0667/
-    project.pdf
-    project.pdf.unt
-    folder1/
-      lecture.pdf
-      lecture.pdf.unt
-    folder2/
-    folder3/
-  original_backup/
-    manifest.json
-    critical_tk0667/
-      project.pdf
-      folder1/...
-  recovered_output/
-    critical_tk0667/
-      project.pdf
-      folder1/...
-  keys/
-    public.pem
-  .runtime/
-    encrypt.py
-    decrypt.py
-    recovery_private.pem
-```
-
-## 반복 실습
-프로그램은 기존 `.unt` 또는 기존 manifest를 무조건 덮어쓰지 않습니다. 반복 실습 전 VM 스냅샷을 복원하거나 실습 생성물(`.unt`, `original_backup`, `recovered_output`)을 별도로 보관한 뒤 새 환경에서 실행하세요. **원본 PDF를 지우지 마세요.**
-
-## 과제 기준
-PDF 내용에 실제 AES-256-GCM + RSA-OAEP 암호화를 적용합니다. 다만 `.unt`는 복사 암호문이며 원본 PDF를 삭제하거나 잠그지 않습니다. 강의안의 실파일 접근 불가 시연과는 차이가 있습니다. 최종 과제에서는 적절한 주석, Monitoring/Detection/Mitigation도 별도 필요합니다.
+## 주의
+- GUI는 ESC 키로 종료합니다.
+- 암호화 전 VM 스냅샷을 저장하세요.
+- 처음 실행 후 재실행하면 기존 manifest나 `.unt` 때문에 암호화를 중지하도록 설계했습니다.
+- 이 버전은 문법 검증만 수행했으며 Kali에서 실제 전체 시연을 검증하지 않았습니다.

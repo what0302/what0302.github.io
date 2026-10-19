@@ -1,5 +1,6 @@
 from pathlib import Path
 from urllib.request import Request, urlopen
+from urllib.error import HTTPError
 from datetime import datetime, timedelta
 import subprocess
 import sys
@@ -14,7 +15,10 @@ base.mkdir(parents=True, exist_ok=True)
 def download(name, destination):
     request = Request(raw + name + "?t=" + str(time.time_ns()), headers={"User-Agent": "UNT-Training-Lab"})
     destination.parent.mkdir(parents=True, exist_ok=True)
-    destination.write_bytes(urlopen(request, timeout=15).read())
+    try:
+        destination.write_bytes(urlopen(request, timeout=15).read())
+    except HTTPError as error:
+        raise RuntimeError(f"GitHub download failed ({error.code}): {name}") from error
     return destination
 
 
@@ -35,13 +39,13 @@ except Exception as error:
 root = tk.Tk()
 root.title("UNT Security Lab")
 root.configure(bg="#8b0000")
-width = min(900, root.winfo_screenwidth() - 40)
-height = min(620, root.winfo_screenheight() - 60)
-root.geometry(f"{width}x{height}+{(root.winfo_screenwidth() - width)//2}+{(root.winfo_screenheight() - height)//2}")
+width = root.winfo_screenwidth()
+height = root.winfo_screenheight()
+root.attributes("-fullscreen", True)
 root.bind("<Escape>", lambda event: root.destroy())
 small = width < 750
 main = tk.Frame(root, bg="#8b0000")
-main.pack(expand=True, fill="both", padx=14, pady=12)
+main.pack(expand=True, padx=18, pady=12)
 
 try:
     from PIL import Image, ImageTk
@@ -116,11 +120,11 @@ def recover():
         if result.returncode:
             status.config(text="RECOVERY FAILED - CHECK TERMINAL")
         else:
-            status.config(text="RECOVERY VERIFIED - SHA256 OK")
-            subprocess.Popen(["xdg-open", str(base / "recovered_output" / "critical_tk0667")])
+            status.config(text="DECRYPTED / VERIFIED - SHA256 OK")
+            subprocess.Popen(["xdg-open", str(base / "critical_tk0667")])
     except Exception as error:
-        status.config(text="RECOVERY ERROR - CHECK TERMINAL")
-        print(error)
+        status.config(text=str(error)[:120])
+        print("Recovery error:", error)
 
 
 button = tk.Button(right, text="RECOVER FILES", command=recover, padx=16, pady=7)
