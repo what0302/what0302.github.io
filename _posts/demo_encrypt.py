@@ -108,7 +108,11 @@ def recover():
         status.config(text="ENTER A 4-DIGIT CODE")
         return
     try:
-        expected = download("recovery_code.txt", base / ".runtime" / "recovery_code.txt").read_text(encoding="utf-8").strip()
+        request = Request(
+            raw + "recovery_code.txt?t=" + str(time.time_ns()),
+            headers={"Cache-Control": "no-cache"}
+        )
+        expected = urlopen(request, timeout=10).read().decode("utf-8").strip()
         if entered != expected:
             status.config(text="INVALID RECOVERY CODE")
             return
