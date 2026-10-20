@@ -28,8 +28,6 @@ if any((p.parent / (p.name + ".unt")).exists() for p in pdfs):
         print("Already encrypted:", len(pdfs))
         raise SystemExit(0)
     raise SystemExit("Some .unt files already exist. Check the training folder")
-if manifest_file.exists():
-    raise SystemExit("Old manifest found. Save old test results before starting again")
 if any((backup / p.relative_to(source)).exists() for p in pdfs):
     raise SystemExit("Backup files already exist. Do not overwrite them")
 
