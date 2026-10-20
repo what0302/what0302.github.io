@@ -33,7 +33,7 @@ for p in files:
     payload += bytes([len(aes.nonce)]) + aes.nonce + tag + ciphertext
 
     p.write_bytes(payload)                       
-    p.rename(p.parent / (p.name + ".unt")) 
+    p.replace(p.parent / (p.name + ".unt"))
     print("Encrypted:", p.parent / (p.name + ".unt"))
 
 print("Done:", len(files), "encrypted copies created")
