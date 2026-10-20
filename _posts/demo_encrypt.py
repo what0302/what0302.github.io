@@ -62,8 +62,7 @@ def label(text, size=14, color="white"):
 
 
 label("RANSOMWARE SIMULATION", 30)
-label("ENCRYPTED PDF COPIES CREATED" if worked else "ENCRYPTION FAILED", 17, "#ffe600")
-label("THIS IS A TEST. ORIGINAL FILES ARE UNCHANGED.", 10)
+label("당신의 파일은 암호화되었습니다", 17, "#ffe600")
 
 clock = tk.Label(frame, text="00:30:00", bg="#171717", fg="#ffe600", font=("Courier", 39, "bold"), padx=16, pady=8)
 clock.pack(pady=10)
@@ -113,5 +112,4 @@ btn.pack(pady=8)
 code.bind("<Return>", lambda e: recover())
 if not worked:
     btn.config(state="disabled")
-label("SIMULATION ONLY  •  ESC = Exit", 10)
 root.mainloop()
