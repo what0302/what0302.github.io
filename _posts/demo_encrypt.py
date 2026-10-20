@@ -36,8 +36,23 @@ root.configure(bg="#8b0000")
 root.attributes("-fullscreen", True)
 root.bind("<Escape>", lambda e: root.destroy())
 
-frame = tk.Frame(root, bg="#8b0000")
-frame.pack(expand=True, padx=18, pady=12)
+main = tk.Frame(root, bg="#8b0000")
+main.pack(expand=True, padx=18, pady=12)
+
+try:
+    from PIL import Image, ImageTk
+    imagefile = download("unt_mascot.png", base / ".runtime" / "unt_mascot.png")
+    image = Image.open(imagefile).convert("RGBA")
+    image.thumbnail((220, 330))
+    photo = ImageTk.PhotoImage(image)
+    left = tk.Label(main, image=photo, bg="#8b0000")
+    left.image = photo
+    left.pack(side="left", padx=(4, 18))
+except Exception as e:
+    print("Mascot:", e)
+
+frame = tk.Frame(main, bg="#8b0000")
+frame.pack(side="left", fill="both", expand=True)
 
 
 def label(text, size=14, color="white"):
