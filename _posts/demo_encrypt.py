@@ -62,7 +62,7 @@ def label(text, size=14, color="white"):
 
 
 label("RANSOMWARE SIMULATION", 30)
-label("당신의 파일은 암호화되었습니다", 17, "#ffe600")
+label("YOUR FILES HAVE BEEN ENCRYPTED", 17, "#ffe600")
 
 clock = tk.Label(frame, text="00:30:00", bg="#171717", fg="#ffe600", font=("Courier", 39, "bold"), padx=16, pady=8)
 clock.pack(pady=10)
