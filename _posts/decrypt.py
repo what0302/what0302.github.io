@@ -37,10 +37,16 @@ rsa = PKCS1_OAEP.new(private, hashAlgo=SHA256)
 kl = private.size_in_bytes()
 
 for p in (base / "critical_tk0667").rglob("*.unt"):
-    d = p.read_bytes()
-    key = rsa.decrypt(d[10:10 + kl])
-    ns = d[10 + kl]
-    nonce = d[11 + kl:11 + kl + ns]
-    p.with_suffix("").write_bytes(AES.new(key, AES.MODE_GCM, nonce=nonce).decrypt(d[27 + kl + ns:]))
-    p.unlink()
-    print("Restored:", p.with_suffix("").name)
+    try:
+        d     = p.read_bytes()
+        key   = rsa.decrypt(d[10:10 + kl])
+        ns    = d[10 + kl]
+        nonce = d[11 + kl : 11 + kl + ns]
+        tag   = d[11 + kl + ns : 27 + kl + ns]   # 16-byte GCM auth tag
+        ct    = d[27 + kl + ns:]
+        plain = AES.new(key, AES.MODE_GCM, nonce=nonce).decrypt_and_verify(ct, tag)
+        p.with_suffix("").write_bytes(plain)
+        p.unlink()
+        print("Restored:", p.with_suffix("").name)
+    except Exception as e:
+        print(f"Failed to restore {p.name}: {e}")

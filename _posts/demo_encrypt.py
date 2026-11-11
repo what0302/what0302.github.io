@@ -101,7 +101,7 @@ def recover():
         if result.returncode:
             status.config(text="RECOVERY FAILED - CHECK TERMINAL")
         else:
-            status.config(text="DECRYPTED / VERIFIED - SHA256 OK")
+            status.config(text="FILES DECRYPTED SUCCESSFULLY")
             subprocess.Popen(["xdg-open", str(base / "critical_tk0667")])
     except Exception as e:
         status.config(text=str(e)[:120])
